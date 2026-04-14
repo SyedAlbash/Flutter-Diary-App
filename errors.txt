@@ -1,0 +1,108 @@
+Analyzing diary_app...                                          
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\utils\cloudy_background.dart:43:29 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\utils\cloudy_background.dart:68:37 - deprecated_member_use
+  error - Target of URI doesn't exist: '../../../../core/utils/storage_util.dart' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:2:8 - uri_does_not_exist
+  error - Undefined name 'StorageUtil' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:30:13 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:31:11 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:32:13 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:32:35 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:33:13 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:33:33 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:42:20 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pattern\presentation\controllers\pattern_controller.dart:42:42 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\pattern\presentation\pages\pattern_pages.dart:203:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\pattern\presentation\pages\pattern_pages.dart:241:23 - deprecated_member_use
+  error - Target of URI doesn't exist: '../../../../core/constants/app_constants.dart' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:2:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../../core/utils/storage_util.dart' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:3:8 - uri_does_not_exist
+  error - Undefined name 'StorageUtil' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:36:13 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:36:35 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:37:13 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:37:35 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:38:13 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:38:33 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:47:23 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\auth\pin\presentation\controllers\pin_controller.dart:47:45 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\pin\presentation\pages\pin_pages.dart:183:32 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\pin\presentation\pages\pin_pages.dart:250:31 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\pin\presentation\pages\pin_pages.dart:253:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\pin\presentation\pages\pin_pages.dart:281:31 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\calendar\presentation\pages\calendar_page.dart:67:46 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion - lib\features\compose\presentation\pages\compose_page.dart:315:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\compose\presentation\pages\compose_page.dart:453:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\compose\presentation\pages\compose_page.dart:456:58 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\compose\presentation\pages\compose_page.dart:493:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\compose\presentation\pages\compose_page.dart:515:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\compose\presentation\pages\compose_page.dart:705:47 - deprecated_member_use
+warning - Unused import: '../../../compose/presentation/pages/compose_page.dart' - lib\features\home\presentation\pages\home_page.dart:11:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:60:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:81:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:235:56 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:240:58 - deprecated_member_use
+warning - The value of the local variable 'now' isn't used - lib\features\home\presentation\pages\home_page.dart:289:11 - unused_local_variable
+  error - Target of URI doesn't exist: '../../../core/constants/app_constants.dart' - lib\features\onboarding\presentation\pages\your_name_page.dart:3:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../core/theme/app_theme.dart' - lib\features\onboarding\presentation\pages\your_name_page.dart:4:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../core/utils/cloudy_background.dart' - lib\features\onboarding\presentation\pages\your_name_page.dart:5:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../core/utils/storage_util.dart' - lib\features\onboarding\presentation\pages\your_name_page.dart:6:8 - uri_does_not_exist
+  error - Undefined name 'StorageUtil' - lib\features\onboarding\presentation\pages\your_name_page.dart:24:5 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\onboarding\presentation\pages\your_name_page.dart:24:27 - undefined_identifier
+  error - Undefined name 'AppRoutes' - lib\features\onboarding\presentation\pages\your_name_page.dart:25:17 - undefined_identifier
+  error - The method 'CloudyBackground' isn't defined for the type '_YourNamePageState' - lib\features\onboarding\presentation\pages\your_name_page.dart:31:13 - undefined_method
+  error - The name 'StepIndicator' isn't a class - lib\features\onboarding\presentation\pages\your_name_page.dart:36:21 - creation_with_non_type
+  error - Undefined name 'AppStrings' - lib\features\onboarding\presentation\pages\your_name_page.dart:44:23 - undefined_identifier
+  error - Invalid constant value - lib\features\onboarding\presentation\pages\your_name_page.dart:48:32 - invalid_constant
+  error - Undefined name 'AppColors' - lib\features\onboarding\presentation\pages\your_name_page.dart:48:32 - undefined_identifier
+  error - Undefined name 'AppStrings' - lib\features\onboarding\presentation\pages\your_name_page.dart:53:23 - undefined_identifier
+  error - Invalid constant value - lib\features\onboarding\presentation\pages\your_name_page.dart:56:32 - invalid_constant
+  error - Undefined name 'AppColors' - lib\features\onboarding\presentation\pages\your_name_page.dart:56:32 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\onboarding\presentation\pages\your_name_page.dart:62:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\onboarding\presentation\pages\your_name_page.dart:66:49 - deprecated_member_use
+  error - Undefined name 'AppStrings' - lib\features\onboarding\presentation\pages\your_name_page.dart:74:37 - undefined_identifier
+  error - Invalid constant value - lib\features\onboarding\presentation\pages\your_name_page.dart:76:54 - invalid_constant
+  error - Undefined name 'AppColors' - lib\features\onboarding\presentation\pages\your_name_page.dart:76:54 - undefined_identifier
+  error - Invalid constant value - lib\features\onboarding\presentation\pages\your_name_page.dart:97:30 - invalid_constant
+  error - Undefined name 'AppStrings' - lib\features\onboarding\presentation\pages\your_name_page.dart:97:30 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\photos\presentation\pages\photos_page.dart:97:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\photos\presentation\pages\photos_page.dart:123:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\photos\presentation\pages\photos_page.dart:148:49 - deprecated_member_use
+warning - Unused import: '../../../../core/utils/storage_util.dart' - lib\features\settings\presentation\pages\daily_reminders_page.dart:4:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\daily_reminders_page.dart:72:48 - deprecated_member_use
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\features\settings\presentation\pages\daily_reminders_page.dart:94:21 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\daily_reminders_page.dart:108:44 - deprecated_member_use
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\features\settings\presentation\pages\daily_reminders_page.dart:223:25 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\delete_date_page.dart:49:45 - deprecated_member_use
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\features\settings\presentation\pages\mood_style_page.dart:127:27 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\features\settings\presentation\pages\mood_style_page.dart:129:27 - deprecated_member_use
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\features\settings\presentation\pages\settings_page.dart:162:7 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:238:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_username_page.dart:56:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_username_page.dart:60:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\themes_page.dart:80:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\themes_page.dart:96:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\themes_page.dart:111:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\themes_page.dart:120:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\themes_page.dart:175:47 - deprecated_member_use
+  error - Target of URI doesn't exist: '../../../core/constants/app_constants.dart' - lib\features\splash\presentation\pages\splash_page.dart:4:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../core/theme/app_theme.dart' - lib\features\splash\presentation\pages\splash_page.dart:5:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../core/utils/cloudy_background.dart' - lib\features\splash\presentation\pages\splash_page.dart:6:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../core/utils/storage_util.dart' - lib\features\splash\presentation\pages\splash_page.dart:7:8 - uri_does_not_exist
+  error - Undefined name 'StorageUtil' - lib\features\splash\presentation\pages\splash_page.dart:38:9 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\splash\presentation\pages\splash_page.dart:38:29 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\splash\presentation\pages\splash_page.dart:40:24 - undefined_identifier
+  error - Undefined name 'StorageUtil' - lib\features\splash\presentation\pages\splash_page.dart:40:46 - undefined_identifier
+  error - Undefined name 'AppRoutes' - lib\features\splash\presentation\pages\splash_page.dart:42:25 - undefined_identifier
+  error - Undefined name 'AppRoutes' - lib\features\splash\presentation\pages\splash_page.dart:44:25 - undefined_identifier
+  error - Undefined name 'AppRoutes' - lib\features\splash\presentation\pages\splash_page.dart:47:23 - undefined_identifier
+  error - The method 'CloudyBackground' isn't defined for the type '_SplashPageState' - lib\features\splash\presentation\pages\splash_page.dart:54:13 - undefined_method
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\splash\presentation\pages\splash_page.dart:67:41 - deprecated_member_use
+  error - Undefined name 'AppColors' - lib\features\splash\presentation\pages\splash_page.dart:71:32 - undefined_identifier
+  error - Invalid constant value - lib\features\splash\presentation\pages\splash_page.dart:80:28 - invalid_constant
+  error - Undefined name 'AppColors' - lib\features\splash\presentation\pages\splash_page.dart:80:28 - undefined_identifier
+  error - Undefined name 'AppStrings' - lib\features\splash\presentation\pages\splash_page.dart:85:19 - undefined_identifier
+  error - Undefined name 'AppColors' - lib\features\splash\presentation\pages\splash_page.dart:89:28 - undefined_identifier
+  error - Undefined name 'AppStrings' - lib\features\splash\presentation\pages\splash_page.dart:94:19 - undefined_identifier
+  error - Undefined name 'AppColors' - lib\features\splash\presentation\pages\splash_page.dart:97:28 - undefined_identifier
+  error - Invalid constant value - lib\features\splash\presentation\pages\splash_page.dart:109:25 - invalid_constant
+  error - Undefined name 'AppStrings' - lib\features\splash\presentation\pages\splash_page.dart:109:25 - undefined_identifier
+
+104 issues found. (ran in 1.5s)
