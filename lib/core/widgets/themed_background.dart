@@ -17,9 +17,12 @@ class ThemedBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<ThemeController>(
       builder: (tc) {
-        final currentTheme = tc.currentTheme;
+        final currentRoute = Get.currentRoute;
+        final currentTheme = tc.getThemeFor(route: currentRoute);
         final bgImage = currentTheme.backgroundImage;
         final isDark = currentTheme.brightness == Brightness.dark;
+
+        final size = MediaQuery.of(context).size;
 
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
@@ -32,25 +35,34 @@ class ThemedBackground extends StatelessWidget {
           ),
           child: Material(
             color: Colors.transparent,
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                color: currentTheme.background,
-                image: bgImage != null
-                    ? DecorationImage(
-                        image: AssetImage(bgImage),
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                      )
-                    : null,
-              ),
-              child: Container(
-                color: showOverlay
-                    ? Colors.black.withOpacity(0.1)
-                    : Colors.transparent,
-                child: child,
-              ),
+            child: Stack(
+              children: [
+                // Fixed background that covers the entire screen regardless of keyboard
+                SizedBox(
+                  width: size.width,
+                  height: size.height,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: currentTheme.background,
+                      image: bgImage != null
+                          ? DecorationImage(
+                              image: AssetImage(bgImage),
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                            )
+                          : null,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: showOverlay
+                      ? Colors.black.withValues(alpha: 0.1)
+                      : Colors.transparent,
+                  child: child,
+                ),
+              ],
             ),
           ),
         );

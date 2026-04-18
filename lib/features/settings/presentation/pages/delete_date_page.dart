@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:diary_with_lock/core/theme/app_theme.dart';
 import 'package:diary_with_lock/features/home/presentation/controllers/home_controller.dart';
 import 'package:diary_with_lock/core/widgets/themed_background.dart';
@@ -38,7 +39,8 @@ class DeleteDatePage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.cardBg,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+                  border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.1)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +51,7 @@ class DeleteDatePage extends StatelessWidget {
                           width: 32,
                           height: 32,
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.1),
+                            color: Colors.red.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(Icons.delete_outline,
@@ -69,8 +71,7 @@ class DeleteDatePage extends StatelessWidget {
                     const SizedBox(height: 10),
                     Text(
                       'This will delete all your saved diary entries,\nsettings, and media.',
-                      style: TextStyle(
-                          fontSize: 12, color: AppColors.textGrey),
+                      style: TextStyle(fontSize: 12, color: AppColors.textGrey),
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
@@ -82,12 +83,10 @@ class DeleteDatePage extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Delete All Notes',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600)),
+                            style: TextStyle(fontWeight: FontWeight.w600)),
                       ),
                     ),
                   ],
@@ -115,49 +114,28 @@ class _DeleteWarningDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Warning illustration
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Icon(Icons.sticky_note_2_outlined,
-                      color: AppColors.primary, size: 48),
-                  Positioned(
-                    bottom: 16,
-                    right: 16,
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.delete,
-                          color: Colors.white, size: 16),
-                    ),
-                  ),
-                ],
-              ),
+            Image.asset(
+              'assets/images/screens/Delete Date Card.png',
+              width: 180,
+              fit: BoxFit.contain,
             ),
             const SizedBox(height: 16),
             Text(
               'Warning !!',
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
+                color: const Color(0xFF1A1C1E),
               ),
             ),
             const SizedBox(height: 12),
             Text(
               'Are you sure you want to delete All\nNotes?',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: AppColors.textGrey),
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: const Color(0xFF7F8C8D),
+              ),
             ),
             const SizedBox(height: 24),
             // Yes Sure button
@@ -177,18 +155,23 @@ class _DeleteWarningDialog extends StatelessWidget {
                     colorText: Colors.white,
                     margin: const EdgeInsets.all(16),
                     borderRadius: 10,
-                    duration: const Duration(seconds: 3),
+                    duration: const Duration(seconds: 2),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: const Color(0xFF3B9EFE),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
+                  elevation: 0,
                 ),
-                child: const Text('Yes, Sure',
-                    style: TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w600)),
+                child: Text(
+                  'Yes, Sure',
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -197,7 +180,10 @@ class _DeleteWarningDialog extends StatelessWidget {
               onPressed: () => Get.back(),
               child: Text(
                 'Cancel',
-                style: TextStyle(color: AppColors.textGrey),
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF7F8C8D),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],

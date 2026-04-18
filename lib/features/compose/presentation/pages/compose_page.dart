@@ -1,12 +1,14 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:diary_with_lock/core/theme/app_theme.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
+import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:diary_with_lock/features/home/data/models/diary_entry.dart';
 import 'package:diary_with_lock/features/home/presentation/controllers/home_controller.dart';
@@ -25,14 +27,79 @@ class _ComposePageState extends State<ComposePage> {
   final TextEditingController _contentController = TextEditingController();
   final List<String> _imagePaths = [];
   String _selectedMood = '';
+  String _selectedMoodStyle = 'Animals Mood'; // Default style
   DateTime _selectedDate = DateTime.now();
   List<String> _tags = [];
   int _selectedBgIndex = -1;
   String? _selectedBgImage;
 
+  // Font settings states
+  TextAlign _textAlign = TextAlign.left;
+  double _fontSize = 16;
+  Color _textColor = Colors.black;
+  String _fontFamily = 'Poppins';
+
+  final List<String> _defaultTags = const [
+    'Love',
+    'Family',
+    'DailyLife',
+    'Smile',
+    'DailyLog',
+    'Work',
+    'Creative',
+    'Sad',
+    'Motivation',
+    'Pet',
+  ];
+
+  List<String> _allTags = [];
+
+  void _loadTags() {
+    final customTagsString = StorageUtil.getString(StorageUtil.keyCustomTags);
+    if (customTagsString != null) {
+      try {
+        final List<dynamic> decoded = jsonDecode(customTagsString);
+        final List<String> customTags =
+            decoded.map((e) => e.toString()).toList();
+        setState(() {
+          _allTags = {..._defaultTags, ...customTags}.toList();
+        });
+      } catch (e) {
+        debugPrint('Error loading custom tags: $e');
+        setState(() {
+          _allTags = List.from(_defaultTags);
+        });
+      }
+    } else {
+      setState(() {
+        _allTags = List.from(_defaultTags);
+      });
+    }
+  }
+
+  void _saveNewTag(String tag) {
+    final customTagsString = StorageUtil.getString(StorageUtil.keyCustomTags);
+    List<String> customTags = [];
+    if (customTagsString != null) {
+      try {
+        final List<dynamic> decoded = jsonDecode(customTagsString);
+        customTags = decoded.map((e) => e.toString()).toList();
+      } catch (e) {
+        debugPrint('Error parsing custom tags for saving: $e');
+      }
+    }
+
+    if (!customTags.contains(tag) && !_defaultTags.contains(tag)) {
+      customTags.add(tag);
+      StorageUtil.setString(StorageUtil.keyCustomTags, jsonEncode(customTags));
+      _loadTags(); // Refresh local list
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadTags();
     if (widget.entry != null) {
       _titleController.text = widget.entry!.title;
       _contentController.text = widget.entry!.content;
@@ -82,29 +149,6 @@ class _ComposePageState extends State<ComposePage> {
     const Color(0xFF37474F), // Dark Grey
   ];
 
-  final List<String> _defaultTags = [
-    'Love',
-    'Family',
-    'DailyLife',
-    'Smile',
-    'DailyLog',
-    'Work',
-    'Creative',
-    'Sad',
-    'Motivation',
-    'Pet',
-    'Health',
-    'Fitness',
-    'Parent',
-    'Food',
-    'Love',
-    'Mode',
-    'Happy',
-    'Dream',
-    'Gratitude',
-    'Angry',
-  ];
-
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final file = await picker.pickImage(source: ImageSource.gallery);
@@ -117,22 +161,19 @@ class _ComposePageState extends State<ComposePage> {
     DateTime tempSelected = _selectedDate;
     DateTime focusedDay = _selectedDate;
 
-    await showModalBottomSheet(
+    await showDialog(
       context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-      ),
       builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.75,
+        return Dialog(
+          backgroundColor: Colors.white,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          child: StatefulBuilder(
+            builder: (context, setSheetState) {
+              return SingleChildScrollView(
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
@@ -140,7 +181,7 @@ class _ComposePageState extends State<ComposePage> {
                       decoration: const BoxDecoration(
                         color: Color(0xFF3B9EFE),
                         borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(32),
+                          top: Radius.circular(24),
                         ),
                       ),
                       child: Row(
@@ -155,7 +196,7 @@ class _ComposePageState extends State<ComposePage> {
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 1.3,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Colors.white.withValues(alpha: 0.8),
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -174,7 +215,7 @@ class _ComposePageState extends State<ComposePage> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
+                              color: Colors.white.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
@@ -185,95 +226,91 @@ class _ComposePageState extends State<ComposePage> {
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                          child: TableCalendar(
-                            firstDay: DateTime.utc(2020, 1, 1),
-                            lastDay: DateTime.utc(2030, 12, 31),
-                            focusedDay: focusedDay,
-                            selectedDayPredicate: (day) =>
-                                isSameDay(tempSelected, day),
-                            onDaySelected: (selectedDay, newFocused) {
-                              setSheetState(() {
-                                tempSelected = selectedDay;
-                                focusedDay = newFocused;
-                              });
-                            },
-                            headerStyle: HeaderStyle(
-                              titleCentered: false,
-                              formatButtonVisible: false,
-                              titleTextFormatter: (date, locale) =>
-                                  DateFormat('MMMM yyyy').format(date),
-                              titleTextStyle: GoogleFonts.poppins(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF1A1A1A),
-                              ),
-                              leftChevronIcon: const Icon(
-                                Icons.chevron_left_rounded,
-                                color: Color(0xFF3B9EFE),
-                              ),
-                              rightChevronIcon: const Icon(
-                                Icons.chevron_right_rounded,
-                                color: Color(0xFF3B9EFE),
-                              ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                      child: TableCalendar(
+                        firstDay: DateTime.utc(2020, 1, 1),
+                        lastDay: DateTime.utc(2030, 12, 31),
+                        focusedDay: focusedDay,
+                        rowHeight: 42,
+                        selectedDayPredicate: (day) =>
+                            isSameDay(tempSelected, day),
+                        onDaySelected: (selectedDay, newFocused) {
+                          setSheetState(() {
+                            tempSelected = selectedDay;
+                            focusedDay = newFocused;
+                          });
+                        },
+                        headerStyle: HeaderStyle(
+                          titleCentered: false,
+                          formatButtonVisible: false,
+                          titleTextFormatter: (date, locale) =>
+                              DateFormat('MMMM yyyy').format(date),
+                          titleTextStyle: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1A1A1A),
+                          ),
+                          leftChevronIcon: const Icon(
+                            Icons.chevron_left_rounded,
+                            color: Color(0xFF3B9EFE),
+                          ),
+                          rightChevronIcon: const Icon(
+                            Icons.chevron_right_rounded,
+                            color: Color(0xFF3B9EFE),
+                          ),
+                        ),
+                        daysOfWeekStyle: DaysOfWeekStyle(
+                          weekdayStyle: GoogleFonts.poppins(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF95A5A6),
+                          ),
+                          weekendStyle: GoogleFonts.poppins(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF95A5A6),
+                          ),
+                        ),
+                        calendarStyle: CalendarStyle(
+                          outsideDaysVisible: false,
+                          isTodayHighlighted: true,
+                          selectedDecoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: const Color(0xFF3B9EFE),
+                              width: 2,
                             ),
-                            daysOfWeekStyle: DaysOfWeekStyle(
-                              weekdayStyle: GoogleFonts.poppins(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF95A5A6),
-                              ),
-                              weekendStyle: GoogleFonts.poppins(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF95A5A6),
-                              ),
-                            ),
-                            calendarStyle: CalendarStyle(
-                              outsideDaysVisible: false,
-                              isTodayHighlighted: true,
-                              selectedDecoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: const Color(0xFF3B9EFE),
-                                  width: 2,
-                                ),
-                              ),
-                              selectedTextStyle: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF3B9EFE),
-                              ),
-                              todayDecoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.transparent,
-                              ),
-                              todayTextStyle: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF3B9EFE),
-                              ),
-                              defaultTextStyle: GoogleFonts.poppins(
-                                fontSize: 14,
-                                color: const Color(0xFF2C3E50),
-                                fontWeight: FontWeight.w500,
-                              ),
-                              weekendTextStyle: GoogleFonts.poppins(
-                                fontSize: 14,
-                                color: const Color(0xFF2C3E50),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                          ),
+                          selectedTextStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF3B9EFE),
+                          ),
+                          todayDecoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.transparent,
+                          ),
+                          todayTextStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF3B9EFE),
+                          ),
+                          defaultTextStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: const Color(0xFF2C3E50),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          weekendTextStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: const Color(0xFF2C3E50),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -298,8 +335,9 @@ class _ComposePageState extends State<ComposePage> {
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 28, vertical: 12),
+                              elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                             child: Text(
@@ -315,122 +353,921 @@ class _ComposePageState extends State<ComposePage> {
                     ),
                   ],
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       },
     );
   }
 
+  void _showFontSettings() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => StatefulBuilder(
+        builder: (context, setSheetState) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Font',
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF1A1C1E),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.check_circle,
+                          color: Color(0xFF2ECC71), size: 32),
+                      onPressed: () => Get.back(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // Style & Layout
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _sectionHeader('STYLE & LAYOUT'),
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF5F8FC),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _alignmentButton(
+                                    TextAlign.left, Icons.format_align_left,
+                                    (val) {
+                                  setState(() => _textAlign = val);
+                                  setSheetState(() {});
+                                }),
+                                _alignmentButton(
+                                    TextAlign.center, Icons.format_align_center,
+                                    (val) {
+                                  setState(() => _textAlign = val);
+                                  setSheetState(() {});
+                                }),
+                                _alignmentButton(
+                                    TextAlign.right, Icons.format_align_right,
+                                    (val) {
+                                  setState(() => _textAlign = val);
+                                  setSheetState(() {});
+                                }),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _sectionHeader('HEADINGS'),
+                          const SizedBox(height: 12),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                _headingButton('H1', 24, (val) {
+                                  setState(() => _fontSize = val);
+                                  setSheetState(() {});
+                                }),
+                                const SizedBox(width: 8),
+                                _headingButton('H2', 20, (val) {
+                                  setState(() => _fontSize = val);
+                                  setSheetState(() {});
+                                }),
+                                const SizedBox(width: 8),
+                                _headingButton('H3', 16, (val) {
+                                  setState(() => _fontSize = val);
+                                  setSheetState(() {});
+                                }),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 32),
+                _sectionHeader('TEXT COLOR'),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 44,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _colorOption(Colors.black, (val) {
+                        setState(() => _textColor = val);
+                        setSheetState(() {});
+                      }),
+                      _colorOption(const Color(0xFF95A5A6), (val) {
+                        setState(() => _textColor = val);
+                        setSheetState(() {});
+                      }),
+                      _colorOption(const Color(0xFFFF5E5E), (val) {
+                        setState(() => _textColor = val);
+                        setSheetState(() {});
+                      }),
+                      _colorOption(const Color(0xFF00A86B), (val) {
+                        setState(() => _textColor = val);
+                        setSheetState(() {});
+                      }),
+                      _colorOption(const Color(0xFF8E44AD), (val) {
+                        setState(() => _textColor = val);
+                        setSheetState(() {});
+                      }),
+                      _colorOption(const Color(0xFFF1C40F), (val) {
+                        setState(() => _textColor = val);
+                        setSheetState(() {});
+                      }),
+                      _colorOption(const Color(0xFF5E5EFF), (val) {
+                        setState(() => _textColor = val);
+                        setSheetState(() {});
+                      }),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+                _sectionHeader('FONT FAMILY'),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 140,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _fontFamilyOption('Modern\nSans', 'Poppins', (val) {
+                        setState(() => _fontFamily = val);
+                        setSheetState(() {});
+                      }),
+                      const SizedBox(width: 12),
+                      _fontFamilyOption('Editorial\nSerif', 'Playfair Display',
+                          (val) {
+                        setState(() => _fontFamily = val);
+                        setSheetState(() {});
+                      }, hasBadge: true),
+                      const SizedBox(width: 12),
+                      _fontFamilyOption('Handwritten', 'Dancing Script', (val) {
+                        setState(() => _fontFamily = val);
+                        setSheetState(() {});
+                      }, hasBadge: true),
+                      const SizedBox(width: 12),
+                      _fontFamilyOption('Classic\nSerif', 'Merriweather',
+                          (val) {
+                        setState(() => _fontFamily = val);
+                        setSheetState(() {});
+                      }),
+                      const SizedBox(width: 12),
+                      _fontFamilyOption('Casual\nScript', 'Caveat', (val) {
+                        setState(() => _fontFamily = val);
+                        setSheetState(() {});
+                      }),
+                      const SizedBox(width: 12),
+                      _fontFamilyOption('Fun\nScript', 'Pacifico', (val) {
+                        setState(() => _fontFamily = val);
+                        setSheetState(() {});
+                      }),
+                      const SizedBox(width: 12),
+                      _fontFamilyOption('Clean\nSans', 'Roboto', (val) {
+                        setState(() => _fontFamily = val);
+                        setSheetState(() {});
+                      }),
+                      const SizedBox(width: 12),
+                      _fontFamilyOption('Elegant\nSans', 'Montserrat', (val) {
+                        setState(() => _fontFamily = val);
+                        setSheetState(() {});
+                      }),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _sectionHeader(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.poppins(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        color: const Color(0xFFBDC3C7),
+        letterSpacing: 1.2,
+      ),
+    );
+  }
+
+  Widget _alignmentButton(
+      TextAlign align, IconData icon, Function(TextAlign) onTap) {
+    final isSelected = _textAlign == align;
+    return GestureDetector(
+      onTap: () => onTap(align),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.05), blurRadius: 4)
+                ]
+              : null,
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+          color: isSelected ? const Color(0xFFFF5E5E) : const Color(0xFF95A5A6),
+        ),
+      ),
+    );
+  }
+
+  Widget _headingButton(String label, double size, Function(double) onTap) {
+    final isSelected = _fontSize == size;
+    return GestureDetector(
+      onTap: () => onTap(size),
+      child: Container(
+        width: 44,
+        height: 40,
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF1A1C1E) : const Color(0xFFF5F8FC),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: isSelected ? Colors.white : const Color(0xFFBDC3C7),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _colorOption(Color color, Function(Color) onTap) {
+    final isSelected = _textColor == color;
+    return GestureDetector(
+      onTap: () => onTap(color),
+      child: Container(
+        margin: const EdgeInsets.only(right: 14),
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: isSelected
+              ? Border.all(color: const Color(0xFFFF5E5E), width: 2)
+              : null,
+        ),
+        child: Center(
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _fontFamilyOption(String label, String family, Function(String) onTap,
+      {bool hasBadge = false}) {
+    final isSelected = _fontFamily == family;
+    return GestureDetector(
+      onTap: () => onTap(family),
+      child: Container(
+        width: 100,
+        height: 110,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : const Color(0xFFF5F8FC),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? const Color(0xFFFF5E5E) : Colors.transparent,
+            width: 1.5,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5))
+                ]
+              : null,
+        ),
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Aa',
+                  style: TextStyle(
+                    fontFamily: family,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF1A1C1E),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: isSelected
+                        ? const Color(0xFF1A1C1E)
+                        : const Color(0xFF95A5A6),
+                    height: 1.1,
+                  ),
+                ),
+              ],
+            ),
+            if (hasBadge)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF1C40F),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.workspace_premium,
+                      size: 10, color: Colors.white),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _insertEmoji(String emoji) {
+    final text = _contentController.text;
+    final selection = _contentController.selection;
+    final start = selection.start;
+    final end = selection.end;
+
+    if (start == -1) {
+      _contentController.text = text + emoji;
+      return;
+    }
+
+    final newText = text.replaceRange(start, end, emoji);
+    _contentController.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: start + emoji.length),
+    );
+  }
+
+  void _showEmojiPicker() {
+    final List<Map<String, dynamic>> emojiCategories = [
+      {
+        'title': 'Smileys',
+        'emojis': [
+          '😀',
+          '😃',
+          '😄',
+          '😁',
+          '😆',
+          '😅',
+          '😂',
+          '🤣',
+          '😊',
+          '😇',
+          '🙂',
+          '🙃',
+          '😉',
+          '😌',
+          '😍',
+          '🥰',
+          '😘',
+          '😗',
+          '😙',
+          '😚',
+          '😋',
+          '😛',
+          '😝',
+          '😜',
+          '🤪',
+          '🤨',
+          '🧐',
+          '🤓',
+          '😎',
+          '🤩',
+          '🥳',
+          '😏',
+          '😒',
+          '😞',
+          '😔',
+          '😟',
+          '😕',
+          '🙁',
+          '☹️',
+          '😣',
+        ]
+      },
+      {
+        'title': 'Hearts & Hands',
+        'emojis': [
+          '❤️',
+          '🧡',
+          '💛',
+          '💚',
+          '💙',
+          '💜',
+          '🖤',
+          '🤍',
+          '🤎',
+          '💔',
+          '❣️',
+          '💕',
+          '💞',
+          '💓',
+          '💗',
+          '💖',
+          '💘',
+          '💝',
+          '💟',
+          '👋',
+          '🤚',
+          '🖐️',
+          '✋',
+          '🖖',
+          '👌',
+          '🤏',
+          '✌️',
+          '🤞',
+          '🤟',
+          '🤘',
+          '🤙',
+          '👈',
+          '👉',
+          '👆',
+          '🖕',
+          '👇',
+          '☝️',
+          '👍',
+          '👎',
+          '✊',
+        ]
+      },
+      {
+        'title': 'Nature',
+        'emojis': [
+          '🐶',
+          '🐱',
+          '🐭',
+          '🐹',
+          '🐰',
+          '🦊',
+          '🐻',
+          '🐼',
+          '🐻‍❄️',
+          '🐨',
+          '🐯',
+          '🦁',
+          '🐮',
+          '🐷',
+          '🐽',
+          '🐸',
+          '🐵',
+          '🙈',
+          '🙉',
+          '🙊',
+          '🐒',
+          '🐔',
+          '🐧',
+          '🐦',
+          '🐤',
+          '🐣',
+          '🐥',
+          '🦆',
+          '🦢',
+          '🦉',
+          '🦚',
+          '🦜',
+          '🐺',
+          '🐗',
+          '🐴',
+          '🦄',
+          '🐝',
+          '🪱',
+          '🐛',
+          '🦋',
+        ]
+      },
+      {
+        'title': 'Food',
+        'emojis': [
+          '🍏',
+          '🍎',
+          '🍐',
+          '🍊',
+          '🍋',
+          '🍌',
+          '🍉',
+          '🍇',
+          '🍓',
+          '🫐',
+          '🍈',
+          '🍒',
+          '🍑',
+          '🥭',
+          '🍍',
+          '🥥',
+          '🥝',
+          '🍅',
+          '🍆',
+          '🥑',
+          '🥦',
+          '🥬',
+          '🥒',
+          '🌽',
+          '🥕',
+          '🫑',
+          '🥔',
+          '🍠',
+          '🥐',
+          '🥯',
+          '🍞',
+          '🥖',
+          '🥨',
+          '🧀',
+          '🥚',
+          '🍳',
+          '🧈',
+          '🥞',
+          '🧇',
+          '🥓',
+        ]
+      }
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.5,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Select Emoji',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF1A1A1A),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemCount: emojiCategories.length,
+                itemBuilder: (context, index) {
+                  final category = emojiCategories[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                          category['title'].toString().toUpperCase(),
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[400],
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 8,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                        ),
+                        itemCount: (category['emojis'] as List).length,
+                        itemBuilder: (context, i) {
+                          final emoji = category['emojis'][i];
+                          return GestureDetector(
+                            onTap: () {
+                              _insertEmoji(emoji);
+                            },
+                            child: Center(
+                              child: Text(
+                                emoji,
+                                style: const TextStyle(fontSize: 24),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showMoodPicker() {
-    final List<String> moods = ['😊', '😔', '😠', '😴', '🤔', '🥳'];
+    final Map<String, List<String>> moodStyles = {
+      'Animals Mood': ['1.svg', '2.svg', '3.svg', '4.svg', '5.svg', '6.svg'],
+      'Aqua Mood': ['1.svg', '2.svg', '3.svg', '4.svg', '5.svg', '6.svg'],
+      'Cat Mood': [
+        'Icon.svg',
+        'Icon (1).svg',
+        'Icon (2).svg',
+        'Icon (3).svg',
+        'Icon (4).svg',
+        'Icon (5).svg'
+      ],
+      'Pet Mood': ['1.svg', '2.svg', '3.svg', '5.svg', '6.svg', '6 (1).svg'],
+    };
+
     showDialog(
       context: context,
       barrierColor: Colors.black12,
-      builder: (_) => Stack(
-        children: [
-          Positioned(
-            top: 155, // Approximate position below the mood icon
-            right: 24,
-            child: Material(
-              color: Colors.transparent,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 18),
-                    child: CustomPaint(
-                      size: const Size(20, 10),
-                      painter: _TrianglePainter(color: Colors.white),
+      builder: (_) => StatefulBuilder(builder: (context, setDialogState) {
+        final currentMoods = moodStyles[_selectedMoodStyle] ?? [];
+        return Stack(
+          children: [
+            Positioned(
+              top: 155,
+              right: 24,
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 18),
+                      child: CustomPaint(
+                        size: const Size(20, 10),
+                        painter: _TrianglePainter(color: Colors.white),
+                      ),
                     ),
-                  ),
-                  Container(
-                    width: 250,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'How are you feeling?',
-                          style: GoogleFonts.poppins(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF1A1A1A),
+                    Container(
+                      width: 250,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'How are you feeling?',
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF1A1A1A),
+                            ),
                           ),
-                          itemCount: moods.length,
-                          itemBuilder: (ctx, i) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() => _selectedMood = moods[i]);
-                                Get.back();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[50],
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    moods[i],
-                                    style: const TextStyle(fontSize: 28),
+                          const SizedBox(height: 16),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: currentMoods.length,
+                            itemBuilder: (ctx, i) {
+                              final assetPath =
+                                  'assets/images/emojis/$_selectedMoodStyle/${currentMoods[i]}';
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() => _selectedMood = assetPath);
+                                  Get.back();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Center(
+                                    child: SvgPicture.asset(
+                                      assetPath,
+                                      width: 32,
+                                      height: 32,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        GestureDetector(
-                          onTap: () {
-                            Get.back();
-                            // Handle see more
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text('👉 ', style: TextStyle(fontSize: 14)),
-                              Text(
-                                'See more styles',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: const Color(0xFF1A1A1A),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          GestureDetector(
+                            onTap: () {
+                              _showMoodStylesPicker((newStyle) {
+                                setDialogState(() {
+                                  _selectedMoodStyle = newStyle;
+                                });
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('👉 ',
+                                    style: TextStyle(fontSize: 14)),
+                                Text(
+                                  'See more styles',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF1A1A1A),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  void _showMoodStylesPicker(Function(String) onStyleSelected) {
+    final styles = ['Animals Mood', 'Aqua Mood', 'Cat Mood', 'Pet Mood'];
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Select Mood Style',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 120,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: styles.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 16),
+                itemBuilder: (context, index) {
+                  final style = styles[index];
+                  final isSelected = _selectedMoodStyle == style;
+                  // Preview first emoji of the style
+                  String previewIcon = '1.svg';
+                  if (style == 'Cat Mood') previewIcon = 'Icon.svg';
+
+                  return GestureDetector(
+                    onTap: () {
+                      onStyleSelected(style);
+                      setState(() => _selectedMoodStyle = style);
+                      Get.back();
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 70,
+                          height: 70,
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFF3B9EFE).withOpacity(0.1)
+                                : Colors.grey[50],
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF3B9EFE)
+                                  : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/images/emojis/$style/$previewIcon',
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          style.replaceAll(' Mood', ''),
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: isSelected
+                                ? const Color(0xFF3B9EFE)
+                                : Colors.black87,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -439,15 +1276,14 @@ class _ComposePageState extends State<ComposePage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor: Colors.transparent,
       builder: (_) => _TagsSheet(
         selectedTags: _tags,
-        defaultTags: _defaultTags,
+        allTags: _allTags,
         onTagsChanged: (tags) {
           setState(() => _tags = tags);
         },
+        onNewTagAdded: _saveNewTag,
       ),
     );
   }
@@ -481,7 +1317,7 @@ class _ComposePageState extends State<ComposePage> {
                 child: Row(
                   children: [
                     Text(
-                      'Note Backgrounds',
+                      'Background',
                       style: GoogleFonts.poppins(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -504,14 +1340,17 @@ class _ComposePageState extends State<ComposePage> {
                 child: GridView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.8,
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 0.7,
                   ),
-                  itemCount: _noteThemeAssets.length + 1,
+                  itemCount: 1 + _noteThemeAssets.length + _bgColors.length,
                   itemBuilder: (ctx, i) {
                     if (i == 0) {
+                      // Default option
+                      final isSelected =
+                          _selectedBgImage == null && _selectedBgIndex == -1;
                       return GestureDetector(
                         onTap: () {
                           setState(() {
@@ -522,144 +1361,75 @@ class _ComposePageState extends State<ComposePage> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.grey[50],
-                            borderRadius: BorderRadius.circular(24),
-                            border: _selectedBgImage == null &&
-                                    _selectedBgIndex == -1
+                            color: const Color(0xFFF5F8FC),
+                            borderRadius: BorderRadius.circular(16),
+                            border: isSelected
                                 ? Border.all(
-                                    color: tc.currentTheme.primary, width: 2.5)
-                                : Border.all(color: Colors.grey.shade200),
+                                    color: const Color(0xFF3B9EFE), width: 2)
+                                : Border.all(color: Colors.transparent),
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  border:
-                                      Border.all(color: Colors.grey.shade200),
-                                ),
-                                child: Icon(Icons.block_rounded,
-                                    color: Colors.grey[400], size: 32),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                'Default',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
+                          child: Center(
+                            child: Icon(
+                              Icons.block_rounded,
+                              color: const Color(0xFF3B9EFE).withOpacity(0.6),
+                              size: 32,
+                            ),
                           ),
                         ),
                       );
                     }
-                    final asset = _noteThemeAssets[i - 1];
-                    final isSelected = _selectedBgImage == asset;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedBgImage = asset;
-                          _selectedBgIndex = -1;
-                        });
-                        Get.back();
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          border: isSelected
-                              ? Border.all(
-                                  color: tc.currentTheme.primary, width: 3)
-                              : Border.all(color: Colors.transparent),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+
+                    if (i <= _noteThemeAssets.length) {
+                      // Asset backgrounds
+                      final asset = _noteThemeAssets[i - 1];
+                      final isSelected = _selectedBgImage == asset;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedBgImage = asset;
+                            _selectedBgIndex = -1;
+                          });
+                          Get.back();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: isSelected
+                                ? Border.all(
+                                    color: const Color(0xFF3B9EFE), width: 2)
+                                : Border.all(color: Colors.transparent),
+                            image: DecorationImage(
+                              image: AssetImage(asset),
+                              fit: BoxFit.cover,
                             ),
-                          ],
-                          image: DecorationImage(
-                            image: AssetImage(asset),
-                            fit: BoxFit.cover,
                           ),
+                          child: isSelected ? _buildSelectionOverlay(tc) : null,
                         ),
-                        child: isSelected
-                            ? Align(
-                                alignment: Alignment.topRight,
-                                child: Container(
-                                  margin: const EdgeInsets.all(12),
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(Icons.check_rounded,
-                                      color: tc.currentTheme.primary, size: 20),
-                                ),
-                              )
-                            : null,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 24),
-              // Solid Colors Section
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  'SOLID COLORS',
-                  style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.grey.withOpacity(0.6),
-                    letterSpacing: 1.2,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 60,
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _bgColors.length,
-                  itemBuilder: (ctx, i) {
-                    final isSelected = _selectedBgIndex == i;
+                      );
+                    }
+
+                    // Solid colors
+                    final colorIndex = i - 1 - _noteThemeAssets.length;
+                    final color = _bgColors[colorIndex];
+                    final isSelected = _selectedBgIndex == colorIndex;
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          _selectedBgIndex = i;
+                          _selectedBgIndex = colorIndex;
                           _selectedBgImage = null;
                         });
                         Get.back();
                       },
                       child: Container(
-                        width: 44,
-                        height: 44,
-                        margin: const EdgeInsets.only(right: 12, bottom: 12),
                         decoration: BoxDecoration(
-                          color: _bgColors[i],
-                          shape: BoxShape.circle,
+                          color: color,
+                          borderRadius: BorderRadius.circular(16),
                           border: isSelected
                               ? Border.all(
-                                  color: tc.currentTheme.primary, width: 3)
-                              : Border.all(color: Colors.white, width: 2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 4,
-                            ),
-                          ],
+                                  color: const Color(0xFF3B9EFE), width: 2)
+                              : Border.all(color: Colors.transparent),
                         ),
-                        child: isSelected
-                            ? const Icon(Icons.check_rounded,
-                                color: Colors.white, size: 20)
-                            : null,
+                        child: isSelected ? _buildSelectionOverlay(tc) : null,
                       ),
                     );
                   },
@@ -673,6 +1443,22 @@ class _ComposePageState extends State<ComposePage> {
     );
   }
 
+  Widget _buildSelectionOverlay(ThemeController tc) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(2),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(Icons.check_circle,
+            color: ThemeController.themes[0].primary, size: 18),
+      ),
+    );
+  }
+
   void _showDiscardDialog() {
     if (_titleController.text.isEmpty && _contentController.text.isEmpty) {
       Get.back();
@@ -681,56 +1467,93 @@ class _ComposePageState extends State<ComposePage> {
     showDialog(
       context: context,
       builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: Colors.white,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 'Not saved yet',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textDark,
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF1A1C1E),
+                  letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Text(
-                'Would you like to keep it as a draft?',
-                style: TextStyle(fontSize: 13, color: AppColors.textGrey),
+                'Would you like to keep it as a\ndraft?',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  color: const Color(0xFF7F8C8D),
+                  height: 1.4,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Get.back();
-                        Get.back();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.primary),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                    child: SizedBox(
+                      height: 54,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Get.back();
+                          Get.back();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                              color: Color(0xFF3B9EFE), width: 1.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: Text(
+                          'Discard',
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF3B9EFE),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
-                      child: Text('Discard',
-                          style: TextStyle(color: AppColors.primary)),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.back();
-                        _save();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                    child: SizedBox(
+                      height: 54,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.back();
+                          _save();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF3B9EFE),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Save Draft',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                      child: const Text('Save Draft'),
                     ),
                   ),
                 ],
@@ -866,20 +1689,23 @@ class _ComposePageState extends State<ComposePage> {
                   : _selectedBgIndex >= 0
                       ? BoxDecoration(color: _bgColors[_selectedBgIndex])
                       : BoxDecoration(
-                          gradient: tc.currentTheme.backgroundImage != null
+                          gradient: ThemeController.themes[0].backgroundImage !=
+                                  null
                               ? null
                               : LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
-                                  colors: tc.currentTheme.gradientColors,
+                                  colors:
+                                      ThemeController.themes[0].gradientColors,
                                 ),
-                          image: tc.currentTheme.backgroundImage != null
-                              ? DecorationImage(
-                                  image: AssetImage(
-                                      tc.currentTheme.backgroundImage!),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
+                          image:
+                              ThemeController.themes[0].backgroundImage != null
+                                  ? DecorationImage(
+                                      image: AssetImage(ThemeController
+                                          .themes[0].backgroundImage!),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
                         ),
               child: SafeArea(
                 child: Stack(
@@ -992,13 +1818,24 @@ class _ComposePageState extends State<ComposePage> {
                                             color: Colors.white,
                                             shape: BoxShape.circle,
                                           ),
-                                          child: Text(
-                                            _selectedMood.isEmpty
-                                                ? '😊'
-                                                : _selectedMood,
-                                            style:
-                                                const TextStyle(fontSize: 28),
-                                          ),
+                                          child: _selectedMood.isEmpty
+                                              ? const Icon(
+                                                  Icons
+                                                      .sentiment_satisfied_alt_rounded,
+                                                  color: Colors.black26,
+                                                  size: 28,
+                                                )
+                                              : _selectedMood.endsWith('.svg')
+                                                  ? SvgPicture.asset(
+                                                      _selectedMood,
+                                                      width: 28,
+                                                      height: 28,
+                                                    )
+                                                  : Text(
+                                                      _selectedMood,
+                                                      style: const TextStyle(
+                                                          fontSize: 28),
+                                                    ),
                                         ),
                                       ),
                                     ),
@@ -1009,7 +1846,7 @@ class _ComposePageState extends State<ComposePage> {
                                 TextField(
                                   controller: _titleController,
                                   style: GoogleFonts.poppins(
-                                    fontSize: 26,
+                                    fontSize: 22,
                                     fontWeight: FontWeight.w800,
                                     color: contentColor,
                                   ),
@@ -1017,27 +1854,90 @@ class _ComposePageState extends State<ComposePage> {
                                     hintText: 'Title',
                                     hintStyle: GoogleFonts.poppins(
                                       color: contentColor.withOpacity(0.6),
-                                      fontSize: 26,
+                                      fontSize: 22,
                                       fontWeight: FontWeight.w800,
                                     ),
                                     border: InputBorder.none,
                                   ),
                                 ),
+                                // Tags display
+                                if (_tags.isNotEmpty) ...[
+                                  const SizedBox(height: 8),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: _tags.map((tag) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _tags.remove(tag);
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: (isDarkBg
+                                                    ? Colors.white
+                                                    : const Color(0xFF3B9EFE))
+                                                .withOpacity(0.15),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: (isDarkBg
+                                                      ? Colors.white
+                                                      : const Color(0xFF3B9EFE))
+                                                  .withOpacity(0.3),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                '#$tag',
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: isDarkBg
+                                                      ? Colors.white
+                                                      : const Color(0xFF3B9EFE),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Icon(
+                                                Icons.close_rounded,
+                                                size: 14,
+                                                color: isDarkBg
+                                                    ? Colors.white
+                                                    : const Color(0xFF3B9EFE),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
+                                const SizedBox(height: 8),
                                 // Content field
                                 TextField(
                                   controller: _contentController,
                                   maxLines: null,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 18,
-                                    color: isDarkBg
-                                        ? Colors.white.withOpacity(0.9)
-                                        : Colors.grey[700],
+                                  textAlign: _textAlign,
+                                  style: GoogleFonts.getFont(
+                                    _fontFamily,
+                                    fontSize: _fontSize,
+                                    color:
+                                        _textColor == Colors.black && isDarkBg
+                                            ? Colors.white.withOpacity(0.9)
+                                            : _textColor,
                                   ),
                                   decoration: InputDecoration(
                                     hintText: 'Start typing here...',
-                                    hintStyle: GoogleFonts.poppins(
+                                    hintStyle: GoogleFonts.getFont(
+                                      _fontFamily,
                                       color: contentColor.withOpacity(0.6),
-                                      fontSize: 18,
+                                      fontSize: _fontSize,
                                     ),
                                     border: InputBorder.none,
                                   ),
@@ -1152,7 +2052,7 @@ class _ComposePageState extends State<ComposePage> {
                             _ToolbarIcon(
                               icon: Icons.text_format_rounded,
                               color: const Color(0xFF3B9EFE),
-                              onTap: () {}, // Font settings
+                              onTap: _showFontSettings,
                             ),
                             _ToolbarIcon(
                               icon: Icons.image_outlined,
@@ -1162,29 +2062,17 @@ class _ComposePageState extends State<ComposePage> {
                             _ToolbarIcon(
                               icon: Icons.sentiment_satisfied_alt_rounded,
                               color: const Color(0xFF3B9EFE),
-                              onTap: _showMoodPicker,
+                              onTap: _showEmojiPicker,
                             ),
-                            GestureDetector(
+                            _ToolbarIcon(
+                              icon: Icons.local_offer_outlined,
+                              color: const Color(0xFF3B9EFE),
                               onTap: _showTagsSheet,
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFE3F2FD),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Icon(Icons.local_offer_outlined,
-                                    color: Color(0xFF3B9EFE), size: 28),
-                              ),
                             ),
                             _ToolbarIcon(
                               icon: Icons.draw_rounded,
                               color: const Color(0xFF3B9EFE),
                               onTap: () => Get.to(() => const DrawingPage()),
-                            ),
-                            _ToolbarIcon(
-                              icon: Icons.notifications_none_rounded,
-                              color: const Color(0xFF3B9EFE),
-                              onTap: () {}, // Notifications
                             ),
                           ],
                         ),
@@ -1206,10 +2094,7 @@ class _ToolbarIcon extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
   const _ToolbarIcon(
-      {super.key,
-      required this.icon,
-      required this.color,
-      required this.onTap});
+      {required this.icon, required this.color, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -1226,13 +2111,15 @@ class _ToolbarIcon extends StatelessWidget {
 
 class _TagsSheet extends StatefulWidget {
   final List<String> selectedTags;
-  final List<String> defaultTags;
+  final List<String> allTags;
   final Function(List<String>) onTagsChanged;
+  final Function(String) onNewTagAdded;
 
   const _TagsSheet({
     required this.selectedTags,
-    required this.defaultTags,
+    required this.allTags,
     required this.onTagsChanged,
+    required this.onNewTagAdded,
   });
 
   @override
@@ -1312,130 +2199,174 @@ class _TagsSheetState extends State<_TagsSheet> {
     final tag = _tagController.text.trim();
     if (tag.isNotEmpty && !_selected.contains(tag)) {
       setState(() => _selected.add(tag));
+      widget.onNewTagAdded(tag);
       _tagController.clear();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              children: [
-                const Text('Tags',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    widget.onTagsChanged(_selected);
-                    Get.back();
-                  },
-                  child: Icon(Icons.check_circle,
-                      color: AppColors.primary, size: 28),
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            // Add tag input
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _tagController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Tag Name',
-                      hintStyle:
-                          TextStyle(color: AppColors.textGrey, fontSize: 13),
-                      filled: true,
-                      fillColor: const Color(0xFFF5F8FC),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    Text(
+                      'Tags',
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF1A1C1E),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
                     ),
-                    onSubmitted: (_) => _addTag(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _addTag,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
-                  ),
-                  child: const Text('Add'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Tags grid
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: widget.defaultTags.map((tag) {
-                final isSelected = _selected.contains(tag);
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        _selected.remove(tag);
-                      } else {
-                        _selected.add(tag);
-                      }
-                    });
-                  },
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.primary.withValues(alpha: 0.15)
-                          : const Color(0xFFF5F8FC),
-                      borderRadius: BorderRadius.circular(16),
-                      border: isSelected
-                          ? Border.all(color: AppColors.primary)
-                          : null,
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.check_circle_rounded,
+                          color: Color(0xFF3B9EFE), size: 32),
+                      onPressed: () {
+                        widget.onTagsChanged(_selected);
+                        Get.back();
+                      },
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '# $tag',
-                          style: TextStyle(
-                            fontSize: 12,
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Add tag input
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F8FC),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextField(
+                          controller: _tagController,
+                          style: GoogleFonts.poppins(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: 'Enter Tag Name',
+                            hintStyle: GoogleFonts.poppins(
+                                color: const Color(0xFFBDC3C7), fontSize: 13),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                          ),
+                          onSubmitted: (_) => _addTag(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    ElevatedButton(
+                      onPressed: _addTag,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF3B9EFE),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 14),
+                      ),
+                      child: Text(
+                        'Add',
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Tags grid
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: widget.allTags.map((tag) {
+                    final isSelected = _selected.contains(tag);
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (isSelected) {
+                            _selected.remove(tag);
+                          } else {
+                            _selected.add(tag);
+                          }
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xFF3B9EFE).withOpacity(0.1)
+                              : const Color(0xFFF5F8FC),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
                             color: isSelected
-                                ? AppColors.primary
-                                : AppColors.textGrey,
-                            fontWeight: FontWeight.w500,
+                                ? const Color(0xFF3B9EFE)
+                                : Colors.transparent,
+                            width: 1.5,
                           ),
                         ),
-                        if (isSelected) ...[
-                          const SizedBox(width: 4),
-                          Icon(Icons.close, size: 14, color: AppColors.primary),
-                        ],
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-          ],
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '#$tag',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: isSelected
+                                    ? const Color(0xFF3B9EFE)
+                                    : const Color(0xFF7F8C8D),
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
+                              ),
+                            ),
+                            if (isSelected) ...[
+                              const SizedBox(width: 6),
+                              const Icon(Icons.close_rounded,
+                                  size: 14, color: Color(0xFF3B9EFE)),
+                            ],
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );

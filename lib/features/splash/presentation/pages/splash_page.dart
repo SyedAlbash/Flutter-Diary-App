@@ -59,7 +59,7 @@ class _SplashPageState extends State<SplashPage>
   }
 
   void _onStart() {
-    Get.offAllNamed(AppRoutes.yourName);
+    Get.offAllNamed(AppRoutes.setPin);
   }
 
   @override
@@ -98,16 +98,16 @@ class _SplashPageState extends State<SplashPage>
                                 opacity: _fadeAnim,
                                 child: Image.asset(
                                   'assets/images/screens/Group 162759.png',
-                                  width: 220,
-                                  height: 220,
+                                  width: 180,
+                                  height: 180,
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
                                     debugPrint(
                                         "Splash Image Load Error: $error");
                                     return Image.asset(
                                       'assets/images/screens/Splash Screen.png',
-                                      width: 220,
-                                      height: 220,
+                                      width: 180,
+                                      height: 180,
                                     );
                                   },
                                 ),
@@ -119,7 +119,7 @@ class _SplashPageState extends State<SplashPage>
                                 child: Text(
                                   AppStrings.appName,
                                   style: GoogleFonts.pacifico(
-                                    fontSize: 36,
+                                    fontSize: 32,
                                     color: const Color(0xFF1A1A1A),
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -132,7 +132,7 @@ class _SplashPageState extends State<SplashPage>
                                   AppStrings.appTagline,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: Colors.black.withOpacity(0.7),
                                     letterSpacing: 0.2,
                                   ),
@@ -168,7 +168,8 @@ class _SplashPageState extends State<SplashPage>
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF2196F3).withOpacity(0.3),
+                                color: const Color(0xFF2196F3)
+                                    .withValues(alpha: 0.3),
                                 blurRadius: 12,
                                 offset: const Offset(0, 6),
                               ),
@@ -186,7 +187,7 @@ class _SplashPageState extends State<SplashPage>
                             child: Text(
                               AppStrings.letsStart,
                               style: GoogleFonts.poppins(
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),

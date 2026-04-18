@@ -4,9 +4,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:diary_with_lock/core/services/notification_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
-import 'package:diary_with_lock/core/theme/app_theme.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
-import 'package:diary_with_lock/core/utils/email_util.dart';
 import 'feedback_page.dart';
 import '../controllers/settings_controller.dart';
 
@@ -49,7 +47,12 @@ class SettingsPage extends StatelessWidget {
             ),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.only(
+                  left: 24,
+                  right: 24,
+                  bottom:
+                      120, // Increased bottom padding to avoid overlap with floating navbar
+                ),
                 children: [
                   // PERSONALIZE section
                   const _SectionHeader(label: 'PERSONALIZE'),
@@ -108,7 +111,7 @@ class SettingsPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                             _ReminderToggle(),
+                            _ReminderToggle(),
                           ],
                         ),
                       ),
@@ -185,7 +188,6 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -215,7 +217,7 @@ class _ReminderToggleState extends State<_ReminderToggle> {
   Widget build(BuildContext context) {
     return Switch.adaptive(
       value: _enabled,
-      activeColor: const Color(0xFF3B9EFE),
+      activeTrackColor: const Color(0xFF3B9EFE),
       onChanged: (v) async {
         setState(() => _enabled = v);
         await StorageUtil.setBool(StorageUtil.keyReminderEnabled, v);
@@ -234,6 +236,7 @@ class _ReminderToggleState extends State<_ReminderToggle> {
               'Please enable notifications to receive reminders.',
               snackPosition: SnackPosition.BOTTOM,
               backgroundColor: Colors.red.withValues(alpha: 0.1),
+              duration: const Duration(seconds: 2),
             );
             return;
           }
@@ -288,7 +291,7 @@ class _SettingsCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -304,12 +307,12 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Divider(
+    return const Divider(
       height: 1,
       thickness: 1,
-      color: Colors.grey.withOpacity(0.1),
-      indent: 76,
+      indent: 72,
       endIndent: 16,
+      color: Color(0xFFF1F1F1),
     );
   }
 }
@@ -344,14 +347,12 @@ class _SettingsRow extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: (iconColor ?? const Color(0xFF3B9EFE)).withOpacity(0.08),
+                color: (iconColor ?? const Color(0xFF3B9EFE))
+                    .withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                icon,
-                color: iconColor ?? const Color(0xFF3B9EFE),
-                size: 24,
-              ),
+              child: Icon(icon,
+                  color: iconColor ?? const Color(0xFF3B9EFE), size: 24),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -360,14 +361,13 @@ class _SettingsRow extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: labelColor ?? const Color(0xFF2C3E50),
+                  color: labelColor ?? const Color(0xFF1A1A1A),
                 ),
               ),
             ),
-            if (trailing != null) trailing!,
-            if (trailing == null)
-              const Icon(Icons.chevron_right_rounded,
-                  color: Color(0xFFBDC3C7), size: 24),
+            trailing ??
+                const Icon(Icons.chevron_right_rounded,
+                    color: Color(0xFFBDC3C7), size: 28),
           ],
         ),
       ),
@@ -375,118 +375,110 @@ class _SettingsRow extends StatelessWidget {
   }
 }
 
-// Rate Us Dialog matching Figma design
-class _RateUsDialog extends StatefulWidget {
+class _RateUsDialog extends StatelessWidget {
   const _RateUsDialog();
-
-  @override
-  State<_RateUsDialog> createState() => _RateUsDialogState();
-}
-
-class _RateUsDialogState extends State<_RateUsDialog> {
-  int _rating = 4;
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Padding(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+      child: Container(
         padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(32),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Close button
-            Align(
-              alignment: Alignment.topRight,
-              child: GestureDetector(
-                onTap: () => Get.back(),
-                child: Icon(Icons.close, color: AppColors.textGrey),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F6FF),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF3B9EFE).withValues(alpha: 0.1),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: const Icon(Icons.star_rounded,
+                  color: Color(0xFF3B9EFE), size: 40),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Enjoying the App?',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF1A1A1A),
               ),
             ),
-            // Star emoji
-            const Text('⭐', style: TextStyle(fontSize: 48)),
             const SizedBox(height: 12),
             Text(
-              'Enjoying My Diary App?',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
+              'If you love our app, please take a moment to rate us on the Play Store!',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: const Color(0xFF7F8C8D),
+                height: 1.5,
               ),
             ),
-            const SizedBox(height: 6),
-            Text(
-              'Would you mind taking a moment to rate it?\nIt won\'t take more than a minute.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: AppColors.textGrey),
-            ),
-            const SizedBox(height: 16),
-            // Star rating row
+            const SizedBox(height: 32),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(5, (i) {
-                return GestureDetector(
-                  onTap: () => setState(() => _rating = i + 1),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Icon(
-                      i < _rating ? Icons.star : Icons.star_border,
-                      color: Colors.amber,
-                      size: 36,
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Get.back(),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Text(
+                      'Maybe Later',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF7F8C8D),
+                      ),
                     ),
                   ),
-                );
-              }),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'THE BEST WE CAN GET 🚀',
-              style: TextStyle(fontSize: 10, color: AppColors.textGrey),
-            ),
-            const SizedBox(height: 16),
-            // Rate Now button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  Get.back();
-
-                  try {
-                    // Forward rating to email as requested
-                    await EmailUtil.sendFeedbackEmail(
-                      rating: _rating,
-                      feedback: "Rating from Rate Us dialog.",
-                    );
-
-                    // Also try in-app review if it's a high rating (optional but good for UX)
-                    if (_rating >= 4) {
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Get.back();
                       final InAppReview inAppReview = InAppReview.instance;
                       if (await inAppReview.isAvailable()) {
                         inAppReview.requestReview();
                       }
-                    }
-
-                    Get.snackbar('Thank you!',
-                        'Opening your email app to send your rating...',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor:
-                            AppColors.primary.withValues(alpha: 0.1));
-                  } catch (e) {
-                    Get.snackbar('Error', 'Could not open email app.',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.red.withValues(alpha: 0.1));
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF3B9EFE),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Text(
+                      'Rate Now',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ),
-                child: const Text('Rate Now',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-              ),
+              ],
             ),
           ],
         ),
@@ -501,22 +493,22 @@ class _PasscodeStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lockType = StorageUtil.getString(StorageUtil.keyLockType);
-    final statusText = lockType != null ? lockType.toUpperCase() : 'OFF';
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          statusText,
-          style: GoogleFonts.poppins(
-            color: const Color(0xFFBDC3C7),
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
+    final hasLock = lockType != null;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: hasLock ? const Color(0xFFE8F5E9) : const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        hasLock ? 'Enabled' : 'Disabled',
+        style: GoogleFonts.poppins(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: hasLock ? const Color(0xFF2E7D32) : const Color(0xFF7F8C8D),
         ),
-        const SizedBox(width: 4),
-        const Icon(Icons.chevron_right_rounded,
-            color: Color(0xFFBDC3C7), size: 24),
-      ],
+      ),
     );
   }
 }

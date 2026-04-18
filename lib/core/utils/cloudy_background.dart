@@ -40,7 +40,7 @@ class CloudyBackground extends StatelessWidget {
       width: w,
       height: h,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.5),
+        color: Colors.white.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(50),
       ),
     );
@@ -65,7 +65,7 @@ class StepIndicator extends StatelessWidget {
           decoration: BoxDecoration(
             color: i == current
                 ? AppColors.primary
-                : AppColors.primary.withOpacity(0.3),
+                : AppColors.primary.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(4),
           ),
         ),

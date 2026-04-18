@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:diary_with_lock/core/theme/app_theme.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
@@ -31,8 +30,9 @@ class _SettingsUsernamePageState extends State<SettingsUsernamePage> {
     if (_controller.text.trim().isEmpty) {
       Get.snackbar('Oops!', 'Name cannot be empty',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red.withOpacity(0.1),
-          colorText: Colors.red);
+          backgroundColor: Colors.red.withValues(alpha: 0.1),
+          colorText: Colors.red,
+          duration: const Duration(seconds: 2));
       return;
     }
     await StorageUtil.setString(
@@ -40,13 +40,15 @@ class _SettingsUsernamePageState extends State<SettingsUsernamePage> {
     Get.back();
     Get.snackbar('Saved!', 'Username updated',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green);
+        backgroundColor: Colors.green.withValues(alpha: 0.1),
+        colorText: Colors.green,
+        duration: const Duration(seconds: 2));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Change Username'),
@@ -83,7 +85,7 @@ class _SettingsUsernamePageState extends State<SettingsUsernamePage> {
                   color: AppColors.cardBg,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.2),
+                    color: AppColors.primary.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
@@ -96,8 +98,8 @@ class _SettingsUsernamePageState extends State<SettingsUsernamePage> {
                   ),
                   decoration: InputDecoration(
                     hintText: 'Enter your name...',
-                    hintStyle:
-                        TextStyle(color: AppColors.textGrey.withOpacity(0.5)),
+                    hintStyle: TextStyle(
+                        color: AppColors.textGrey.withValues(alpha: 0.5)),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 16),

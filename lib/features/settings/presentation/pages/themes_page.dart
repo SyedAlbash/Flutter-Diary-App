@@ -35,7 +35,7 @@ class _ThemesPageState extends State<ThemesPage> {
   Widget build(BuildContext context) {
     return GetBuilder<ThemeController>(
       builder: (tc) {
-        final themes = ThemeController.themes;
+        const themes = ThemeController.themes;
 
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -101,7 +101,7 @@ class _ThemesPageState extends State<ThemesPage> {
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.15),
+                                  color: Colors.black.withValues(alpha: 0.15),
                                   blurRadius: 20,
                                   offset: const Offset(0, 10),
                                 ),
@@ -153,7 +153,8 @@ class _ThemesPageState extends State<ThemesPage> {
                           'Theme Applied',
                           '${themes[_currentPage].name} theme is now active!',
                           snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: Colors.white.withOpacity(0.8),
+                          backgroundColor: Colors.white.withValues(alpha: 0.8),
+                          duration: const Duration(seconds: 2),
                         );
                       },
                       child: Container(
@@ -209,19 +210,19 @@ class _ThemesPageState extends State<ThemesPage> {
             height: 40,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(isDark ? 0.15 : 0.8),
+              color: Colors.white.withValues(alpha: isDark ? 0.15 : 0.8),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
                 Icon(Icons.search,
-                    color: textColor.withOpacity(0.6), size: 20),
+                    color: textColor.withValues(alpha: 0.6), size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Search notes..',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
-                    color: textColor.withOpacity(0.6),
+                    color: textColor.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -240,7 +241,7 @@ class _ThemesPageState extends State<ThemesPage> {
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(isDark ? 0.08 : 0.6),
+                  color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.6),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -259,7 +260,7 @@ class _ThemesPageState extends State<ThemesPage> {
                       width: double.infinity,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: textColor.withOpacity(0.15),
+                        color: textColor.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -268,7 +269,7 @@ class _ThemesPageState extends State<ThemesPage> {
                       width: 120,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: textColor.withOpacity(0.1),
+                        color: textColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -283,7 +284,7 @@ class _ThemesPageState extends State<ThemesPage> {
         Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(isDark ? 0.95 : 1.0),
+            color: Colors.white.withValues(alpha: isDark ? 0.95 : 1.0),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -307,7 +308,8 @@ class _ThemesPageState extends State<ThemesPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon,
-            color: isSelected ? const Color(0xFF1A1A1A) : Colors.grey, size: 20),
+            color: isSelected ? const Color(0xFF1A1A1A) : Colors.grey,
+            size: 20),
         const SizedBox(height: 2),
         Text(
           label,

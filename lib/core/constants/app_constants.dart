@@ -15,6 +15,8 @@ class AppRoutes {
   static const String deleteDate = '/settings/delete';
   static const String moodStyle = '/settings/mood';
   static const String themes = '/settings/themes';
+  static const String securityQuestion = '/security-question';
+  static const String recovery = '/recovery';
 }
 
 class AppStrings {

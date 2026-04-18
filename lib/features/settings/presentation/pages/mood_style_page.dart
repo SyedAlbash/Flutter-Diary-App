@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:diary_with_lock/core/theme/app_theme.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:diary_with_lock/core/widgets/themed_background.dart';
 

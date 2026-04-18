@@ -7,11 +7,7 @@ import 'package:diary_with_lock/core/theme/theme_controller.dart';
 /// (e.g. during splash before GetX is ready).
 class AppColors {
   static AppThemeData get _t {
-    try {
-      return ThemeController.to.currentTheme;
-    } catch (_) {
-      return ThemeController.themes[0]; // fallback: Sky Blue
-    }
+    return ThemeController.themes[0]; // Always return Sky Blue as default for non-home screens
   }
 
   static Color get primary => _t.primary;

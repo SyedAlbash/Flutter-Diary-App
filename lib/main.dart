@@ -9,7 +9,6 @@ import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:diary_with_lock/features/auth/pin/presentation/controllers/pin_controller.dart';
 import 'package:diary_with_lock/features/auth/pattern/presentation/controllers/pattern_controller.dart';
 import 'package:diary_with_lock/features/splash/presentation/pages/splash_page.dart';
-import 'package:diary_with_lock/features/onboarding/presentation/pages/your_name_page.dart';
 import 'package:diary_with_lock/features/auth/pin/presentation/pages/pin_pages.dart';
 import 'package:diary_with_lock/features/auth/pattern/presentation/pages/pattern_pages.dart';
 import 'package:diary_with_lock/features/home/presentation/pages/home_page.dart';
@@ -21,6 +20,8 @@ import 'package:diary_with_lock/features/settings/presentation/pages/delete_date
 import 'package:diary_with_lock/features/settings/presentation/pages/mood_style_page.dart';
 import 'package:diary_with_lock/features/settings/presentation/pages/themes_page.dart';
 import 'package:diary_with_lock/features/auth/pin/presentation/pages/passcode_settings_page.dart';
+import 'package:diary_with_lock/core/services/lifecycle_service.dart';
+import 'package:diary_with_lock/features/auth/presentation/pages/security_question_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,8 @@ Future<void> main() async {
   // 1. Initialize core storage first (critical for all controllers)
   await StorageUtil.init();
 
-  // 2. Initialize ThemeController immediately with storage-ready data
+  // 2. Initialize LifecycleService and ThemeController
+  Get.put(LifecycleService(), permanent: true);
   Get.put(ThemeController(), permanent: true);
 
   // 3. Pre-cache critical fonts and services to reduce initial jank
@@ -72,7 +74,7 @@ class DiaryApp extends StatelessWidget {
     return GetBuilder<ThemeController>(
       builder: (tc) => GetMaterialApp(
         title: 'Diary With Lock',
-        theme: tc.themeData,
+        theme: tc.defaultThemeData,
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.light,
         color: AppColors.primary,
@@ -80,7 +82,6 @@ class DiaryApp extends StatelessWidget {
         initialBinding: InitialBinding(),
         getPages: [
           GetPage(name: AppRoutes.splash, page: () => const SplashPage()),
-          GetPage(name: AppRoutes.yourName, page: () => const YourNamePage()),
           GetPage(name: AppRoutes.setPin, page: () => const SetPinPage()),
           GetPage(
               name: AppRoutes.confirmPin, page: () => const ConfirmPinPage()),
@@ -116,6 +117,14 @@ class DiaryApp extends StatelessWidget {
           GetPage(
             name: '/passcode-settings',
             page: () => const PasscodeSettingsPage(),
+          ),
+          GetPage(
+            name: AppRoutes.securityQuestion,
+            page: () => const SecurityQuestionPage(),
+          ),
+          GetPage(
+            name: AppRoutes.recovery,
+            page: () => const SecurityQuestionPage(isRecovery: true),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 
 /// Defines a single app theme with all the colors needed
@@ -262,6 +263,37 @@ class ThemeController extends GetxController {
 
   AppThemeData get currentTheme => themes[_themeIndex.value];
 
+  bool get isLockCreated =>
+      StorageUtil.getString(StorageUtil.keyLockType) != null;
+
+  /// Determines if the custom theme should be applied based on route and tab
+  bool shouldApplyTheme(String? route, {int? tabIndex}) {
+    final bool isLockScreen = route?.contains('/verify') ?? false;
+    final bool isHomePage = route == AppRoutes.home;
+
+    if (isHomePage) {
+      // Only apply theme on the Diary tab (index 0) if a lock is created
+      return isLockCreated && tabIndex == 0;
+    }
+
+    if (isLockScreen) {
+      // Only apply theme on lock screen if a lock is actually created
+      return isLockCreated;
+    }
+
+    return false;
+  }
+
+  AppThemeData getThemeFor({String? route, int? tabIndex}) {
+    return shouldApplyTheme(route, tabIndex: tabIndex)
+        ? currentTheme
+        : themes[0];
+  }
+
+  ThemeData getThemeDataFor({String? route, int? tabIndex}) {
+    return _buildThemeData(getThemeFor(route: route, tabIndex: tabIndex));
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -275,12 +307,10 @@ class ThemeController extends GetxController {
       final idx = int.tryParse(stored) ?? 0;
       if (idx >= 0 && idx < themes.length) {
         _themeIndex.value = idx;
-        // Apply the loaded theme to GetMaterialApp
-        // This is safe even before GetMaterialApp is built as GetX queues it
-        Get.changeTheme(_buildThemeData(themes[idx]));
       }
     } else {
-      debugPrint("ThemeController: No theme found in storage, using default (0)");
+      debugPrint(
+          "ThemeController: No theme found in storage, using default (0)");
     }
   }
 
@@ -294,9 +324,6 @@ class ThemeController extends GetxController {
       _themeIndex.value = index;
       await StorageUtil.setString('theme_index', index.toString());
 
-      // Update the GetMaterialApp theme
-      Get.changeTheme(_buildThemeData(themes[index]));
-
       // Notify GetBuilder listeners (including the root app widget)
       update();
 
@@ -306,6 +333,7 @@ class ThemeController extends GetxController {
   }
 
   ThemeData get themeData => _buildThemeData(currentTheme);
+  ThemeData get defaultThemeData => _buildThemeData(themes[0]);
 
   static ThemeData _buildThemeData(AppThemeData t) {
     final isDark = t.brightness == Brightness.dark;

@@ -80,23 +80,52 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 ),
                 const SizedBox(height: 32),
                 // Star rating
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(5, (i) {
-                    return GestureDetector(
-                      onTap: () => setState(() => _starRating = i + 1),
-                      child: Padding(
+                GestureDetector(
+                  onHorizontalDragUpdate: (details) {
+                    final RenderBox box =
+                        context.findRenderObject() as RenderBox;
+                    final double localX =
+                        box.globalToLocal(details.globalPosition).dx;
+                    final double startX =
+                        (MediaQuery.of(context).size.width - (5 * 56)) / 2;
+                    final double relativeX = localX - startX;
+
+                    if (relativeX >= 0 && relativeX <= 5 * 56) {
+                      final int rating = (relativeX / 56).ceil();
+                      if (rating != _starRating) {
+                        setState(() => _starRating = rating.clamp(1, 5));
+                      }
+                    }
+                  },
+                  onTapDown: (details) {
+                    final RenderBox box =
+                        context.findRenderObject() as RenderBox;
+                    final double localX =
+                        box.globalToLocal(details.globalPosition).dx;
+                    final double startX =
+                        (MediaQuery.of(context).size.width - (5 * 56)) / 2;
+                    final double relativeX = localX - startX;
+
+                    if (relativeX >= 0 && relativeX <= 5 * 56) {
+                      final int rating = (relativeX / 56).ceil();
+                      setState(() => _starRating = rating.clamp(1, 5));
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(5, (i) {
+                      return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: Icon(
-                          i < _starRating ? Icons.star : Icons.star,
+                          Icons.star,
                           color: i < _starRating
                               ? const Color(0xFFFFC107)
                               : const Color(0xFFFFC107).withValues(alpha: 0.2),
                           size: 44,
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+                  ),
                 ),
                 const SizedBox(height: 40),
                 // Feedback type selector
@@ -158,7 +187,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                       ),
@@ -222,6 +251,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           'Please select a star rating',
                           snackPosition: SnackPosition.BOTTOM,
                           backgroundColor: Colors.red.withValues(alpha: 0.1),
+                          duration: const Duration(seconds: 2),
                         );
                         return;
                       }
@@ -231,6 +261,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           'Please tell us more about your experience',
                           snackPosition: SnackPosition.BOTTOM,
                           backgroundColor: Colors.red.withValues(alpha: 0.1),
+                          duration: const Duration(seconds: 2),
                         );
                         return;
                       }
@@ -248,7 +279,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           'Opening your email app to send feedback...',
                           snackPosition: SnackPosition.BOTTOM,
                           backgroundColor: Colors.green.withValues(alpha: 0.1),
-                          duration: const Duration(seconds: 3),
+                          duration: const Duration(seconds: 2),
                         );
                       } catch (e) {
                         Get.snackbar(
@@ -256,6 +287,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           'Could not open email app. Please try again.',
                           snackPosition: SnackPosition.BOTTOM,
                           backgroundColor: Colors.red.withValues(alpha: 0.1),
+                          duration: const Duration(seconds: 2),
                         );
                       }
                     },

@@ -6,6 +6,18 @@ class PinController extends GetxController {
   final RxString savedPin = ''.obs;
   final RxBool isError = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    clear();
+  }
+
+  @override
+  void onClose() {
+    clear();
+    super.onClose();
+  }
+
   void addDigit(String digit) {
     if (enteredPin.value.length < 4) {
       enteredPin.value += digit;

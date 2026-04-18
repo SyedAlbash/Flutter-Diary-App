@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-import 'package:diary_with_lock/core/theme/app_theme.dart';
 import 'package:diary_with_lock/features/home/presentation/controllers/home_controller.dart';
 import 'package:diary_with_lock/features/home/data/models/diary_entry.dart';
 import 'package:diary_with_lock/features/compose/presentation/pages/compose_page.dart';
@@ -51,7 +50,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 borderRadius: BorderRadius.circular(32),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 18,
                     offset: const Offset(0, 8),
                   ),
@@ -201,8 +200,12 @@ class _CalendarPageState extends State<CalendarPage> {
                     else
                       Expanded(
                         child: ListView.builder(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
+                            bottom:
+                                120, // Bottom padding to avoid overlap with floating navbar
+                          ),
                           itemCount: dayEntries.length,
                           itemBuilder: (ctx, i) =>
                               _CalendarEntryTile(entry: dayEntries[i]),
@@ -240,7 +243,7 @@ class _CalendarEntryTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 15,
               offset: const Offset(0, 6),
             ),

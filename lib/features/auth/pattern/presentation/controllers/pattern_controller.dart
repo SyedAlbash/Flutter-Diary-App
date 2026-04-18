@@ -7,6 +7,18 @@ class PatternController extends GetxController {
   final RxBool isError = false.obs;
   final RxBool isDrawing = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    clear();
+  }
+
+  @override
+  void onClose() {
+    clear();
+    super.onClose();
+  }
+
   void addDot(int index) {
     if (!enteredPattern.contains(index)) {
       enteredPattern.add(index);

@@ -63,7 +63,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -110,7 +110,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                     ),
                     Switch.adaptive(
                       value: _passcodeEnabled,
-                      activeColor: const Color(0xFF3B9EFE),
+                      activeTrackColor: const Color(0xFF3B9EFE),
                       onChanged: (v) async {
                         if (v) {
                           // Default to PIN if enabling
@@ -147,7 +147,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -161,7 +161,15 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                       iconColor: const Color(0xFF2C3E50),
                       title: 'Change Password',
                       subtitle: 'Change Passcode with providing old Password.',
-                      onTap: () => Get.toNamed(AppRoutes.setPin),
+                      onTap: () {
+                        final lockType =
+                            StorageUtil.getString(StorageUtil.keyLockType);
+                        if (lockType == 'pattern') {
+                          Get.toNamed(AppRoutes.setPattern);
+                        } else {
+                          Get.toNamed(AppRoutes.setPin);
+                        }
+                      },
                     ),
                     const _Divider(),
                     _buildSettingsRow(
@@ -170,7 +178,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                       iconColor: const Color(0xFFFF7675),
                       title: 'Security Questions',
                       subtitle: 'Change questions, stay secure',
-                      onTap: () {}, // TODO: Implement security questions
+                      onTap: () => Get.toNamed(AppRoutes.securityQuestion),
                     ),
                     const _Divider(),
                     _buildSettingsRow(
@@ -179,7 +187,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                       iconColor: const Color(0xFF3B9EFE),
                       title: 'Forgot Your Passcode',
                       subtitle: 'Forgot passcode? Answer to reset.',
-                      onTap: () {}, // TODO: Implement forgot passcode
+                      onTap: () => Get.toNamed(AppRoutes.recovery),
                     ),
                   ],
                 ),
@@ -203,17 +211,17 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: iconBgColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(icon, color: iconColor, size: 24),
+              child: Icon(icon, color: iconColor, size: 28),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -231,16 +239,18 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                   Text(
                     subtitle,
                     style: GoogleFonts.poppins(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: const Color(0xFF7F8C8D),
-                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded,
-                color: Color(0xFFBDC3C7), size: 24),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: const Color(0xFF7F8C8D).withValues(alpha: 0.5),
+            ),
           ],
         ),
       ),

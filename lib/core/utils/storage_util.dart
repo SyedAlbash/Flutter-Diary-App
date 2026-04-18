@@ -68,4 +68,7 @@ class StorageUtil {
   static const String keyOnboardingDone = 'onboarding_done';
   static const String keyReminderEnabled = 'reminder_enabled';
   static const String keyReminderTime = 'reminder_time'; // "HH:mm"
+  static const String keyCustomTags = 'custom_tags';
+  static const String keySecurityQuestion = 'security_question';
+  static const String keySecurityAnswer = 'security_answer';
 }

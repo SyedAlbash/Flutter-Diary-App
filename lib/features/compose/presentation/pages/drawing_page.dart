@@ -14,7 +14,7 @@ class _DrawingPageState extends State<DrawingPage> {
   final List<DrawingPoint?> _points = [];
   final List<DrawingPoint?> _undone = [];
   Color _selectedColor = AppColors.primary;
-  double _strokeWidth = 4.0;
+  final double _strokeWidth = 4.0;
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +86,7 @@ class _DrawingPageState extends State<DrawingPage> {
                           borderRadius: BorderRadius.circular(18),
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  const Color(0xFF3B9EFE).withOpacity(0.35),
+                              color: const Color(0xFF3B9EFE).withOpacity(0.35),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -198,7 +197,7 @@ class _DrawingPageState extends State<DrawingPage> {
                       borderRadius: BorderRadius.circular(32),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 16,
                           offset: const Offset(0, 6),
                         ),
@@ -282,7 +281,8 @@ class _DrawingPageState extends State<DrawingPage> {
       'Drawing Saved!',
       'Your drawing has been added.',
       snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green.withOpacity(0.1),
+      backgroundColor: Colors.green.withValues(alpha: 0.1),
+      duration: const Duration(seconds: 2),
     );
   }
 }
@@ -301,9 +301,11 @@ class DrawerPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (int i = 0; i < points.length - 1; i++) {
       if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(points[i]!.point, points[i + 1]!.point, points[i]!.paint);
+        canvas.drawLine(
+            points[i]!.point, points[i + 1]!.point, points[i]!.paint);
       } else if (points[i] != null && points[i + 1] == null) {
-        canvas.drawPoints(PointMode.points, [points[i]!.point], points[i]!.paint);
+        canvas.drawPoints(
+            PointMode.points, [points[i]!.point], points[i]!.paint);
       }
     }
   }

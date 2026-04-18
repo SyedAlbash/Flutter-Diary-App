@@ -56,7 +56,8 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
           'Permission Needed',
           'Please enable notifications to receive reminders.',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red.withOpacity(0.1),
+          backgroundColor: Colors.red.withValues(alpha: 0.1),
+          duration: const Duration(seconds: 2),
         );
         return;
       }
@@ -194,7 +195,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                       ),
                       Switch.adaptive(
                         value: _reminderEnabled,
-                        activeColor:
+                        activeTrackColor:
                             const Color(0xFF76FF03), // Vibrant green switch
                         onChanged: (v) {
                           setState(() => _reminderEnabled = v);
@@ -214,11 +215,11 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
-                        color: const Color(0xFF3B9EFE).withOpacity(0.3),
+                        color: const Color(0xFF3B9EFE).withValues(alpha: 0.3),
                         width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                        color: Colors.black.withValues(alpha: 0.03),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
                       ),
@@ -261,7 +262,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                                         fontSize: 24,
                                         fontWeight: FontWeight.w600,
                                         color: const Color(0xFF3B9EFE)
-                                            .withOpacity(0.5),
+                                            .withValues(alpha: 0.5),
                                       ),
                                     ),
                                     const SizedBox(width: 4),
@@ -297,7 +298,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                       ),
@@ -310,7 +311,8 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF3B9EFE).withOpacity(0.1),
+                              color: const Color(0xFF3B9EFE)
+                                  .withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -401,7 +403,8 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF3B9EFE).withOpacity(0.3),
+                            color:
+                                const Color(0xFF3B9EFE).withValues(alpha: 0.3),
                             blurRadius: 12,
                             offset: const Offset(0, 6),
                           ),

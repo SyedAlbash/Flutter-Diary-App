@@ -20,62 +20,114 @@ class HomePage extends StatelessWidget {
     final controller = Get.put(HomeController());
     return GetBuilder<ThemeController>(
       builder: (tc) {
-        final currentTheme = tc.currentTheme;
-        final isDark = currentTheme.brightness == Brightness.dark;
+        return Obx(() {
+          final currentTheme = tc.getThemeFor(
+            route: AppRoutes.home,
+            tabIndex: controller.currentTab.value,
+          );
+          final isDark = currentTheme.brightness == Brightness.dark;
+          final size = MediaQuery.of(context).size;
 
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle(
-            statusBarColor: currentTheme.primary,
-            statusBarIconBrightness: Brightness.light,
-            statusBarBrightness: Brightness.dark,
-            systemNavigationBarColor: currentTheme.bottomNavBg,
-            systemNavigationBarIconBrightness:
-                isDark ? Brightness.light : Brightness.dark,
-          ),
-          child: Scaffold(
-            extendBody: true,
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                gradient: currentTheme.backgroundImage != null
-                    ? null
-                    : LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: currentTheme.gradientColors,
-                      ),
-                image: currentTheme.backgroundImage != null
-                    ? DecorationImage(
-                        image: AssetImage(currentTheme.backgroundImage!),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
+          return Theme(
+            data: tc.getThemeDataFor(
+              route: AppRoutes.home,
+              tabIndex: controller.currentTab.value,
+            ),
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(
+                statusBarColor: currentTheme.primary,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark,
+                systemNavigationBarColor: currentTheme.bottomNavBg,
+                systemNavigationBarIconBrightness:
+                    isDark ? Brightness.light : Brightness.dark,
               ),
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  Obx(() {
-                    final tabs = [
-                      _DiaryTab(controller: controller),
-                      const CalendarPage(embedded: true),
-                      PhotosPage(embedded: true),
-                      const SettingsPage(),
-                    ];
-                    return tabs[controller.currentTab.value];
-                  }),
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 24, right: 24, bottom: 16),
-                      child: _BottomNav(controller: controller),
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                extendBody: true,
+                body: Stack(
+                  children: [
+                    // Fixed background
+                    SizedBox(
+                      width: size.width,
+                      height: size.height,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: currentTheme.background,
+                          gradient: currentTheme.backgroundImage != null
+                              ? null
+                              : LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: currentTheme.gradientColors,
+                                ),
+                          image: currentTheme.backgroundImage != null
+                              ? DecorationImage(
+                                  image:
+                                      AssetImage(currentTheme.backgroundImage!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        [
+                          _DiaryTab(controller: controller),
+                          const CalendarPage(embedded: true),
+                          PhotosPage(embedded: true),
+                          const SettingsPage(),
+                        ][controller.currentTab.value],
+
+                        // Floating Action Button for adding new entry
+                        // Only show when there are entries (not in empty state) and ONLY on the Diary tab (tab 0)
+                        if (controller.entries.isNotEmpty &&
+                            controller.currentTab.value == 0)
+                          Positioned(
+                            bottom: 110,
+                            right: 24,
+                            child: GestureDetector(
+                              onTap: () => Get.toNamed(AppRoutes.compose),
+                              child: Container(
+                                width: 56,
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  color: currentTheme.primary,
+                                  shape: BoxShape.circle,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 12,
+                                      offset: Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 24, right: 24, bottom: 16),
+                            child: _BottomNav(controller: controller),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
+          );
+        });
       },
     );
   }
@@ -94,8 +146,8 @@ class _BottomNav extends StatelessWidget {
         'label': 'Diary'
       },
       {
-        'icon': Icons.calendar_today_outlined,
-        'activeIcon': Icons.calendar_today,
+        'icon': Icons.calendar_month_outlined,
+        'activeIcon': Icons.calendar_month,
         'label': 'Calendar'
       },
       {
@@ -109,78 +161,84 @@ class _BottomNav extends StatelessWidget {
         'label': 'Settings'
       },
     ];
-    return GetBuilder<ThemeController>(
-      builder: (tc) {
-        final selectedColor = tc.currentTheme.primary;
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(50),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                blurRadius: 15,
-                offset: const Offset(0, 5),
-              ),
-            ],
+
+    final theme = Theme.of(context);
+    final selectedColor = theme.primaryColor;
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
-          child: Obx(() => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(items.length, (i) {
-                  final selected = controller.currentTab.value == i;
-                  return Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => controller.currentTab.value = i,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: selected
-                                  ? selectedColor.withOpacity(0.1)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Icon(
-                              selected
-                                  ? items[i]['activeIcon'] as IconData
-                                  : items[i]['icon'] as IconData,
-                              color: selected
-                                  ? selectedColor
-                                  : Colors.grey.withOpacity(0.6),
-                              size: 24,
-                            ),
-                          ),
-                          Text(
-                            items[i]['label'] as String,
-                            style: GoogleFonts.poppins(
-                              fontSize: 10,
-                              color: selected
-                                  ? selectedColor
-                                  : Colors.grey.withOpacity(0.6),
-                              fontWeight:
-                                  selected ? FontWeight.w600 : FontWeight.w500,
-                            ),
-                          ),
-                        ],
+        ],
+      ),
+      child: Obx(() => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(items.length, (i) {
+              final selected = controller.currentTab.value == i;
+              return Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => controller.currentTab.value = i,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? selectedColor.withValues(alpha: 0.1)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Icon(
+                          selected
+                              ? items[i]['activeIcon'] as IconData
+                              : items[i]['icon'] as IconData,
+                          color: selected
+                              ? selectedColor
+                              : Colors.grey.withValues(alpha: 0.6),
+                          size: 24,
+                        ),
                       ),
-                    ),
-                  );
-                }),
-              )),
-        );
-      },
+                      Text(
+                        items[i]['label'] as String,
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          color: selected
+                              ? selectedColor
+                              : Colors.grey.withValues(alpha: 0.6),
+                          fontWeight:
+                              selected ? FontWeight.w600 : FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          )),
     );
   }
 }
 
-class _DiaryTab extends StatelessWidget {
+class _DiaryTab extends StatefulWidget {
   final HomeController controller;
   const _DiaryTab({required this.controller});
+
+  @override
+  State<_DiaryTab> createState() => _DiaryTabState();
+}
+
+class _DiaryTabState extends State<_DiaryTab> {
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
 
   void _showSortMenu(BuildContext context) {
     showDialog(
@@ -213,78 +271,84 @@ class _DiaryTab extends StatelessWidget {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.transparent,
       child: SafeArea(
         child: Column(
           children: [
-            // Header: Search bar and menu
+            // Header: Search and more menu icons in the top right
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              padding: const EdgeInsets.only(
+                  right: 12, top: 12, bottom: 0, left: 24),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                    child: GetBuilder<ThemeController>(
-                      builder: (tc) => Container(
-                        height: 54,
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                  if (_isSearching)
+                    Expanded(
+                      child: Container(
+                        height: 40,
+                        margin: const EdgeInsets.only(right: 8),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                          color: Colors.white.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.search,
-                                color: tc.currentTheme.primary, size: 22),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: TextField(
-                                onChanged: (v) =>
-                                    controller.searchQuery.value = v,
-                                decoration: InputDecoration(
-                                  hintText: 'Search notes..',
-                                  hintStyle: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    color: Colors.grey.withOpacity(0.6),
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ],
+                        child: TextField(
+                          controller: _searchController,
+                          autofocus: true,
+                          style: GoogleFonts.poppins(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: 'Search by title...',
+                            hintStyle: GoogleFonts.poppins(
+                                fontSize: 14, color: Colors.grey),
+                            border: InputBorder.none,
+                            prefixIcon: const Icon(Icons.search,
+                                size: 20, color: Colors.grey),
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                          ),
+                          onChanged: (value) {
+                            widget.controller.searchQuery.value = value;
+                          },
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
                   GetBuilder<ThemeController>(
-                    builder: (tc) => GestureDetector(
-                      onTap: () => _showSortMenu(context),
-                      child: Container(
-                        height: 54,
-                        width: 54,
-                        decoration: BoxDecoration(
-                          color: tc.currentTheme.primary,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: tc.currentTheme.primary.withOpacity(0.3),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(Icons.tune_rounded,
-                            color: Colors.white, size: 24),
+                    builder: (tc) => IconButton(
+                      icon: Icon(
+                        _isSearching
+                            ? Icons.close_rounded
+                            : Icons.search_rounded,
+                        color: tc.currentTheme.primary,
+                        size: 28,
                       ),
+                      onPressed: () {
+                        setState(() {
+                          if (_isSearching) {
+                            _isSearching = false;
+                            _searchController.clear();
+                            widget.controller.searchQuery.value = '';
+                          } else {
+                            _isSearching = true;
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  GetBuilder<ThemeController>(
+                    builder: (tc) => IconButton(
+                      icon: Icon(
+                        Icons.more_vert_rounded,
+                        color: tc.currentTheme.primary,
+                        size: 28,
+                      ),
+                      onPressed: () => _showSortMenu(context),
                     ),
                   ),
                 ],
@@ -293,10 +357,10 @@ class _DiaryTab extends StatelessWidget {
             // Content
             Expanded(
               child: Obx(() {
-                if (controller.entries.isEmpty) {
+                if (widget.controller.entries.isEmpty) {
                   return _EmptyState();
                 }
-                return _EntriesList(controller: controller);
+                return _EntriesList(controller: widget.controller);
               }),
             ),
           ],
@@ -312,42 +376,33 @@ class _EmptyState extends StatelessWidget {
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 120), // Padding for floating nav
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(32),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Use the full design card directly to avoid duplication
-              GestureDetector(
-                onTap: () => Get.toNamed(AppRoutes.compose),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(32),
-                  child: Image.asset(
-                    'assets/images/screens/Main Feature Card.png',
-                    width: double.infinity,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Padding(
-                        padding: EdgeInsets.all(40),
-                        child: Icon(Icons.auto_stories,
-                            size: 100, color: Colors.grey),
-                      );
-                    },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: GestureDetector(
+            onTap: () => Get.toNamed(AppRoutes.compose),
+            child: Image.asset(
+              'assets/images/screens/Main Feature Card.png',
+              width: double.infinity,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  padding: const EdgeInsets.all(40),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(32),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-            ],
+                  child: const Icon(Icons.auto_stories,
+                      size: 100, color: Colors.grey),
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -363,63 +418,91 @@ class _EntriesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<ThemeController>(
       builder: (tc) {
-        // Flatten entries and add month headers as separate items
-        final List<dynamic> items = [];
-        final monthEntries = <String, List<DiaryEntry>>{};
+        return Obx(() {
+          // Flatten entries and add month headers as separate items
+          final List<dynamic> items = [];
+          final monthEntries = <String, List<DiaryEntry>>{};
 
-        // Sort entries by date (newest first is preferred default)
-        final sortedEntries = List<DiaryEntry>.from(controller.entries);
-        sortedEntries.sort((a, b) => b.date.compareTo(a.date));
+          // Filter entries by search query
+          final query = controller.searchQuery.value.toLowerCase();
+          final filteredEntries = controller.entries.where((e) {
+            return e.title.toLowerCase().contains(query);
+          }).toList();
 
-        for (final entry in sortedEntries) {
-          final key = DateFormat('MMMM, yyyy').format(entry.date);
-          if (!monthEntries.containsKey(key)) {
-            monthEntries[key] = [];
-            items.add(key); // Add header string
-          }
-          monthEntries[key]!.add(entry);
-          items.add(entry); // Add entry object
-        }
+          // Sort entries by date (newest first is preferred default)
+          filteredEntries.sort((a, b) => b.date.compareTo(a.date));
 
-        return ListView.builder(
-          padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 8,
-              bottom: 120), // Added bottom padding for floating nav
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            if (item is String) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: tc.currentTheme.textDark,
-                      ),
-                    ),
-                    Text(
-                      '${monthEntries[item]!.length} entries',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: tc.currentTheme.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return _EntryCard(entry: item as DiaryEntry);
+          for (final entry in filteredEntries) {
+            final key = DateFormat('MMMM, yyyy').format(entry.date);
+            if (!monthEntries.containsKey(key)) {
+              monthEntries[key] = [];
+              items.add(key); // Add header string
             }
-          },
-        );
+            monthEntries[key]!.add(entry);
+            items.add(entry); // Add entry object
+          }
+
+          if (items.isEmpty && query.isNotEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.search_off_rounded,
+                      size: 64, color: Colors.grey.withValues(alpha: 0.5)),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No results found for "$query"',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 8,
+                bottom: 120), // Added bottom padding for floating nav
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              if (item is String) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 24, bottom: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item,
+                        style: GoogleFonts.poppins(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF1A1C1E),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${monthEntries[item]!.length} entries this month',
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          color: const Color(0xFF3B9EFE),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return _EntryCard(entry: item as DiaryEntry);
+              }
+            },
+          );
+        });
       },
     );
   }
@@ -438,23 +521,21 @@ class _EntryCard extends StatelessWidget {
             ? Color(int.parse(entry.backgroundColor))
             : null;
 
+        // Determine the content color based on background
         Color contentColor;
         if (isAsset) {
           final name = entry.backgroundColor.toLowerCase();
-          if (name.contains('dark') ||
-              name.contains('sky') ||
-              name.contains('night') ||
-              name.contains('theme 1') ||
-              name.contains('theme 3')) {
-            contentColor = Colors.white;
-          } else {
-            contentColor = Colors.black;
-          }
+          contentColor = (name.contains('dark') ||
+                  name.contains('sky') ||
+                  name.contains('night') ||
+                  name.contains('theme 1') ||
+                  name.contains('theme 3'))
+              ? Colors.white
+              : Colors.black;
         } else if (bgColor != null) {
           contentColor =
               bgColor.computeLuminance() < 0.35 ? Colors.white : Colors.black;
         } else {
-          // Default note (no custom background) - use theme's text color or black
           contentColor = tc.currentTheme.brightness == Brightness.dark
               ? Colors.white
               : Colors.black;
@@ -501,101 +582,122 @@ class _EntryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Date column
-                  Container(
+                  SizedBox(
                     width: 48,
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    decoration: BoxDecoration(
-                      color: contentColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           DateFormat('dd').format(entry.date),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: contentColor,
+                          style: GoogleFonts.poppins(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF3B9EFE),
                           ),
                         ),
                         Text(
-                          DateFormat('MMM').format(entry.date),
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: contentColor.withOpacity(0.8),
+                          DateFormat('MMM').format(entry.date).toUpperCase(),
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFFBDC3C7),
+                            letterSpacing: 0.5,
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 20),
+                  // Vertical Divider
+                  Container(
+                    width: 1,
+                    height: 40,
+                    color: contentColor.withOpacity(0.1),
+                  ),
                   const SizedBox(width: 16),
-                  // Content column
+                  // Content
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
+                      clipBehavior: Clip.none,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
+                            Text(
+                              entry.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1A1C1E),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              entry.content,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: const Color(0xFF7F8C8D),
+                                height: 1.3,
+                              ),
+                            ),
+                            if (entry.tags.isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Wrap(
+                                spacing: 6,
+                                runSpacing: 2,
+                                children: entry.tags.take(3).map((tag) {
+                                  return Text(
+                                    '#$tag',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF3B9EFE),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                            const SizedBox(height: 4),
+                            Align(
+                              alignment: Alignment.bottomRight,
                               child: Text(
-                                entry.title.isEmpty ? 'Untitled' : entry.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: contentColor,
+                                DateFormat('h:mm a').format(entry.date),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 10,
+                                  color: const Color(0xFFBDC3C7),
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
-                            if (entry.mood.isNotEmpty)
-                              Text(
+                          ],
+                        ),
+                        if (entry.mood.isNotEmpty)
+                          Positioned(
+                            top: -4,
+                            right: -4,
+                            child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.12),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
                                 entry.mood,
                                 style: const TextStyle(fontSize: 18),
                               ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          entry.content.isEmpty
-                              ? 'No content...'
-                              : entry.content,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: contentColor.withOpacity(0.7),
-                            height: 1.4,
+                            ),
                           ),
-                        ),
-                        if (entry.tags.isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
-                            children: entry.tags.take(3).map((tag) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: contentColor.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  '#$tag',
-                                  style: TextStyle(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w600,
-                                    color: contentColor.withOpacity(0.8),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
                       ],
                     ),
                   ),
