@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -27,7 +28,7 @@ class _ComposePageState extends State<ComposePage> {
   final TextEditingController _contentController = TextEditingController();
   final List<String> _imagePaths = [];
   String _selectedMood = '';
-  String _selectedMoodStyle = 'Animals Mood'; // Default style
+  String _selectedMoodStyle = 'Normal Mood Pack'; // Default to match image
   DateTime _selectedDate = DateTime.now();
   List<String> _tags = [];
   int _selectedBgIndex = -1;
@@ -100,6 +101,8 @@ class _ComposePageState extends State<ComposePage> {
   void initState() {
     super.initState();
     _loadTags();
+    _selectedMoodStyle =
+        StorageUtil.getString('mood_style') ?? 'Normal Mood Pack';
     if (widget.entry != null) {
       _titleController.text = widget.entry!.title;
       _contentController.text = widget.entry!.content;
@@ -126,14 +129,14 @@ class _ComposePageState extends State<ComposePage> {
   }
 
   final List<String> _noteThemeAssets = [
-    'assets/images/note themes/abstract-dark-background-with-some-smooth-lines-it-some-spots-it 1.png',
-    'assets/images/note themes/digital-art-style-sky-landscape-with-moon.png',
-    'assets/images/note themes/note theme 1.png',
-    'assets/images/note themes/note theme 2.png',
-    'assets/images/note themes/note theme 3.png',
-    'assets/images/note themes/note theme 6.png',
-    'assets/images/note themes/note theme 7.png',
-    'assets/images/note themes/note theme 9.png',
+    'assets/note_themes/abstract_dark.webp',
+    'assets/note_themes/digital_art_sky.webp',
+    'assets/note_themes/note_theme_1.webp',
+    'assets/note_themes/note_theme_2.webp',
+    'assets/note_themes/note_theme_3.webp',
+    'assets/note_themes/note_theme_6.webp',
+    'assets/note_themes/note_theme_7.webp',
+    'assets/note_themes/note_theme_9.webp',
   ];
 
   final List<Color> _bgColors = [
@@ -613,7 +616,8 @@ class _ComposePageState extends State<ComposePage> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                      color: Colors.black.withOpacity(0.05), blurRadius: 4)
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4)
                 ]
               : null,
         ),
@@ -698,7 +702,7 @@ class _ComposePageState extends State<ComposePage> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 15,
                       offset: const Offset(0, 5))
                 ]
@@ -774,7 +778,7 @@ class _ComposePageState extends State<ComposePage> {
     );
   }
 
-  void _showEmojiPicker() {
+  void _showEmojiLibrary() {
     final List<Map<String, dynamic>> emojiCategories = [
       {
         'title': 'Smileys',
@@ -819,10 +823,30 @@ class _ComposePageState extends State<ComposePage> {
           '🙁',
           '☹️',
           '😣',
+          '😖',
+          '😫',
+          '😩',
+          '🥺',
+          '😢',
+          '😭',
+          '😤',
+          '😠',
+          '😡',
+          '🤬',
+          '🤯',
+          '😳',
+          '🥵',
+          '🥶',
+          '😱',
+          '😨',
+          '😰',
+          '😥',
+          '😓',
+          '🤗',
         ]
       },
       {
-        'title': 'Hearts & Hands',
+        'title': 'Hearts & Love',
         'emojis': [
           '❤️',
           '🧡',
@@ -843,6 +867,17 @@ class _ComposePageState extends State<ComposePage> {
           '💘',
           '💝',
           '💟',
+          '💌',
+          '💋',
+          '💏',
+          '💑',
+          '💍',
+          '💎',
+        ]
+      },
+      {
+        'title': 'Hands & People',
+        'emojis': [
           '👋',
           '🤚',
           '🖐️',
@@ -864,10 +899,29 @@ class _ComposePageState extends State<ComposePage> {
           '👍',
           '👎',
           '✊',
+          '👊',
+          '🤛',
+          '🤜',
+          '👏',
+          '🙌',
+          '👐',
+          '🤲',
+          '🤝',
+          '🙏',
+          '✍️',
+          '💅',
+          '🤳',
+          '💪',
+          '🦾',
+          '🦵',
+          '🦿',
+          '🦶',
+          '👂',
+          '🦻',
         ]
       },
       {
-        'title': 'Nature',
+        'title': 'Animals & Nature',
         'emojis': [
           '🐶',
           '🐱',
@@ -909,10 +963,20 @@ class _ComposePageState extends State<ComposePage> {
           '🪱',
           '🐛',
           '🦋',
+          '🐌',
+          '🐞',
+          '🐜',
+          '🦟',
+          '🦗',
+          '🕷️',
+          '🕸️',
+          '🦂',
+          '🐢',
+          '🐍',
         ]
       },
       {
-        'title': 'Food',
+        'title': 'Food & Drink',
         'emojis': [
           '🍏',
           '🍎',
@@ -954,6 +1018,16 @@ class _ComposePageState extends State<ComposePage> {
           '🥞',
           '🧇',
           '🥓',
+          '🥩',
+          '🍗',
+          '🍖',
+          '🌭',
+          '🍔',
+          '🍟',
+          '🍕',
+          '🥘',
+          '🍲',
+          '🥣',
         ]
       }
     ];
@@ -963,7 +1037,7 @@ class _ComposePageState extends State<ComposePage> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.5,
+        height: MediaQuery.of(context).size.height * 0.7,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
@@ -980,18 +1054,32 @@ class _ComposePageState extends State<ComposePage> {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Select Emoji',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF1A1A1A),
-              ),
+            Row(
+              children: [
+                const SizedBox(width: 24),
+                Text(
+                  'Emoji Library',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF1A1A1A),
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close_rounded),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                  ),
+                ),
+                const SizedBox(width: 16),
+              ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 itemCount: emojiCategories.length,
                 itemBuilder: (context, index) {
                   final category = emojiCategories[index];
@@ -999,12 +1087,12 @@ class _ComposePageState extends State<ComposePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: const EdgeInsets.only(top: 24, bottom: 12),
                         child: Text(
                           category['title'].toString().toUpperCase(),
                           style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
                             color: Colors.grey[400],
                             letterSpacing: 1.2,
                           ),
@@ -1015,9 +1103,9 @@ class _ComposePageState extends State<ComposePage> {
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 8,
-                          mainAxisSpacing: 8,
-                          crossAxisSpacing: 8,
+                          crossAxisCount: 7,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
                         ),
                         itemCount: (category['emojis'] as List).length,
                         itemBuilder: (context, i) {
@@ -1025,17 +1113,23 @@ class _ComposePageState extends State<ComposePage> {
                           return GestureDetector(
                             onTap: () {
                               _insertEmoji(emoji);
+                              HapticFeedback.lightImpact();
                             },
-                            child: Center(
-                              child: Text(
-                                emoji,
-                                style: const TextStyle(fontSize: 24),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF5F8FC),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  emoji,
+                                  style: const TextStyle(fontSize: 24),
+                                ),
                               ),
                             ),
                           );
                         },
                       ),
-                      const SizedBox(height: 20),
                     ],
                   );
                 },
@@ -1047,43 +1141,71 @@ class _ComposePageState extends State<ComposePage> {
     );
   }
 
-  void _showMoodPicker() {
+  void _showMoodPicker({bool isFromToolbar = false}) {
     final Map<String, List<String>> moodStyles = {
-      'Animals Mood': ['1.svg', '2.svg', '3.svg', '4.svg', '5.svg', '6.svg'],
-      'Aqua Mood': ['1.svg', '2.svg', '3.svg', '4.svg', '5.svg', '6.svg'],
-      'Cat Mood': [
-        'Icon.svg',
-        'Icon (1).svg',
-        'Icon (2).svg',
-        'Icon (3).svg',
-        'Icon (4).svg',
-        'Icon (5).svg'
+      'Normal Mood Pack': ['😊', '😔', '😡', '😴', '🤔', '🥳'],
+      'Animals Mood': [
+        'assets/emojis/Animals_Mood/1.webp',
+        'assets/emojis/Animals_Mood/2.webp',
+        'assets/emojis/Animals_Mood/3.webp',
+        'assets/emojis/Animals_Mood/4.webp',
+        'assets/emojis/Animals_Mood/5.webp',
+        'assets/emojis/Animals_Mood/6.webp'
       ],
-      'Pet Mood': ['1.svg', '2.svg', '3.svg', '5.svg', '6.svg', '6 (1).svg'],
+      'Aqua Mood': [
+        'assets/emojis/Aqua_Mood/1.webp',
+        'assets/emojis/Aqua_Mood/2.webp',
+        'assets/emojis/Aqua_Mood/3.webp',
+        'assets/emojis/Aqua_Mood/4.webp',
+        'assets/emojis/Aqua_Mood/5.webp',
+        'assets/emojis/Aqua_Mood/6.webp'
+      ],
+      'Cat Mood': [
+        'assets/emojis/Cat_Mood/Icon.svg',
+        'assets/emojis/Cat_Mood/Icon_1.svg',
+        'assets/emojis/Cat_Mood/Icon_2.svg',
+        'assets/emojis/Cat_Mood/Icon_3.svg',
+        'assets/emojis/Cat_Mood/Icon_4.svg',
+        'assets/emojis/Cat_Mood/Icon_5.svg'
+      ],
+      'Pet Mood': [
+        'assets/emojis/Pet_Mood/1.webp',
+        'assets/emojis/Pet_Mood/2.webp',
+        'assets/emojis/Pet_Mood/3.webp',
+        'assets/emojis/Pet_Mood/5.webp',
+        'assets/emojis/Pet_Mood/6.webp',
+        'assets/emojis/Pet_Mood/6_1.webp'
+      ],
     };
 
     showDialog(
       context: context,
       barrierColor: Colors.black12,
       builder: (_) => StatefulBuilder(builder: (context, setDialogState) {
-        final currentMoods = moodStyles[_selectedMoodStyle] ?? [];
+        final currentMoods =
+            moodStyles[_selectedMoodStyle] ?? moodStyles['Normal Mood Pack']!;
         return Stack(
           children: [
             Positioned(
-              top: 155,
-              right: 24,
+              top: isFromToolbar ? null : 155,
+              bottom: isFromToolbar ? 100 : null,
+              right: isFromToolbar ? null : 24,
+              left: isFromToolbar ? (isFromToolbar ? 80 : 100) : null,
               child: Material(
                 color: Colors.transparent,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: isFromToolbar
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.end,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 18),
-                      child: CustomPaint(
-                        size: const Size(20, 10),
-                        painter: _TrianglePainter(color: Colors.white),
+                    if (!isFromToolbar)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 18),
+                        child: CustomPaint(
+                          size: const Size(20, 10),
+                          painter: _TrianglePainter(color: Colors.white),
+                        ),
                       ),
-                    ),
                     Container(
                       width: 250,
                       padding: const EdgeInsets.all(20),
@@ -1092,7 +1214,7 @@ class _ComposePageState extends State<ComposePage> {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -1121,11 +1243,14 @@ class _ComposePageState extends State<ComposePage> {
                             ),
                             itemCount: currentMoods.length,
                             itemBuilder: (ctx, i) {
-                              final assetPath =
-                                  'assets/images/emojis/$_selectedMoodStyle/${currentMoods[i]}';
+                              final moodValue = currentMoods[i];
+                              final bool isSvg = moodValue.endsWith('.svg');
+                              final bool isImage = moodValue.endsWith('.png') ||
+                                  moodValue.endsWith('.webp');
+
                               return GestureDetector(
                                 onTap: () {
-                                  setState(() => _selectedMood = assetPath);
+                                  setState(() => _selectedMood = moodValue);
                                   Get.back();
                                 },
                                 child: Container(
@@ -1135,11 +1260,25 @@ class _ComposePageState extends State<ComposePage> {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Center(
-                                    child: SvgPicture.asset(
-                                      assetPath,
-                                      width: 32,
-                                      height: 32,
-                                    ),
+                                    child: isSvg
+                                        ? SvgPicture.asset(
+                                            moodValue,
+                                            width: 44,
+                                            height: 44,
+                                            fit: BoxFit.contain,
+                                          )
+                                        : isImage
+                                            ? Image.asset(
+                                                moodValue,
+                                                width: 44,
+                                                height: 44,
+                                                fit: BoxFit.contain,
+                                              )
+                                            : Text(
+                                                moodValue,
+                                                style: const TextStyle(
+                                                    fontSize: 32),
+                                              ),
                                   ),
                                 ),
                               );
@@ -1148,11 +1287,8 @@ class _ComposePageState extends State<ComposePage> {
                           const SizedBox(height: 16),
                           GestureDetector(
                             onTap: () {
-                              _showMoodStylesPicker((newStyle) {
-                                setDialogState(() {
-                                  _selectedMoodStyle = newStyle;
-                                });
-                              });
+                              Get.back(); // Close mood picker
+                              Get.toNamed(AppRoutes.moodStyle);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -1173,6 +1309,17 @@ class _ComposePageState extends State<ComposePage> {
                         ],
                       ),
                     ),
+                    if (isFromToolbar)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, right: 10),
+                        child: RotatedBox(
+                          quarterTurns: 2,
+                          child: CustomPaint(
+                            size: const Size(20, 10),
+                            painter: _TrianglePainter(color: Colors.white),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -1180,95 +1327,6 @@ class _ComposePageState extends State<ComposePage> {
           ],
         );
       }),
-    );
-  }
-
-  void _showMoodStylesPicker(Function(String) onStyleSelected) {
-    final styles = ['Animals Mood', 'Aqua Mood', 'Cat Mood', 'Pet Mood'];
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Select Mood Style',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: 120,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: styles.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 16),
-                itemBuilder: (context, index) {
-                  final style = styles[index];
-                  final isSelected = _selectedMoodStyle == style;
-                  // Preview first emoji of the style
-                  String previewIcon = '1.svg';
-                  if (style == 'Cat Mood') previewIcon = 'Icon.svg';
-
-                  return GestureDetector(
-                    onTap: () {
-                      onStyleSelected(style);
-                      setState(() => _selectedMoodStyle = style);
-                      Get.back();
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 70,
-                          height: 70,
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? const Color(0xFF3B9EFE).withOpacity(0.1)
-                                : Colors.grey[50],
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isSelected
-                                  ? const Color(0xFF3B9EFE)
-                                  : Colors.transparent,
-                              width: 2,
-                            ),
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/images/emojis/$style/$previewIcon',
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          style.replaceAll(' Mood', ''),
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: isSelected
-                                ? const Color(0xFF3B9EFE)
-                                : Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -1371,7 +1429,8 @@ class _ComposePageState extends State<ComposePage> {
                           child: Center(
                             child: Icon(
                               Icons.block_rounded,
-                              color: const Color(0xFF3B9EFE).withOpacity(0.6),
+                              color: const Color(0xFF3B9EFE)
+                                  .withValues(alpha: 0.6),
                               size: 32,
                             ),
                           ),
@@ -1741,7 +1800,7 @@ class _ComposePageState extends State<ComposePage> {
                                     boxShadow: [
                                       BoxShadow(
                                         color: const Color(0xFF3B9EFE)
-                                            .withOpacity(0.3),
+                                            .withValues(alpha: 0.3),
                                         blurRadius: 8,
                                         offset: const Offset(0, 4),
                                       ),
@@ -1775,43 +1834,50 @@ class _ComposePageState extends State<ComposePage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    GestureDetector(
-                                      onTap: _pickDate,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.baseline,
-                                        textBaseline: TextBaseline.alphabetic,
-                                        children: [
-                                          Text(
-                                            DateFormat('dd')
-                                                .format(_selectedDate),
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 32,
-                                              fontWeight: FontWeight.w800,
-                                              color: contentColor,
+                                    Flexible(
+                                      child: GestureDetector(
+                                        onTap: _pickDate,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.baseline,
+                                          textBaseline: TextBaseline.alphabetic,
+                                          children: [
+                                            Text(
+                                              DateFormat('dd')
+                                                  .format(_selectedDate),
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 32,
+                                                fontWeight: FontWeight.w800,
+                                                color: contentColor,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            DateFormat('MMM, yyyy')
-                                                .format(_selectedDate),
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600,
-                                              color: contentColor,
+                                            const SizedBox(width: 8),
+                                            Flexible(
+                                              child: Text(
+                                                DateFormat('MMM, yyyy')
+                                                    .format(_selectedDate),
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: contentColor,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
-                                          ),
-                                          Icon(Icons.arrow_drop_down,
-                                              color: contentColor, size: 24),
-                                        ],
+                                            Icon(Icons.arrow_drop_down,
+                                                color: contentColor, size: 24),
+                                          ],
+                                        ),
                                       ),
                                     ),
+                                    const SizedBox(width: 16),
                                     GestureDetector(
                                       onTap: _showMoodPicker,
                                       child: CustomPaint(
                                         painter: _DashedCirclePainter(
-                                            color:
-                                                Colors.black.withOpacity(0.2)),
+                                            color: Colors.black
+                                                .withValues(alpha: 0.2)),
                                         child: Container(
                                           padding: const EdgeInsets.all(8),
                                           decoration: const BoxDecoration(
@@ -1831,11 +1897,21 @@ class _ComposePageState extends State<ComposePage> {
                                                       width: 28,
                                                       height: 28,
                                                     )
-                                                  : Text(
-                                                      _selectedMood,
-                                                      style: const TextStyle(
-                                                          fontSize: 28),
-                                                    ),
+                                                  : _selectedMood.endsWith(
+                                                              '.png') ||
+                                                          _selectedMood
+                                                              .endsWith('.webp')
+                                                      ? Image.asset(
+                                                          _selectedMood,
+                                                          width: 28,
+                                                          height: 28,
+                                                        )
+                                                      : Text(
+                                                          _selectedMood,
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 28),
+                                                        ),
                                         ),
                                       ),
                                     ),
@@ -1853,7 +1929,8 @@ class _ComposePageState extends State<ComposePage> {
                                   decoration: InputDecoration(
                                     hintText: 'Title',
                                     hintStyle: GoogleFonts.poppins(
-                                      color: contentColor.withOpacity(0.6),
+                                      color:
+                                          contentColor.withValues(alpha: 0.6),
                                       fontSize: 22,
                                       fontWeight: FontWeight.w800,
                                     ),
@@ -1880,14 +1957,14 @@ class _ComposePageState extends State<ComposePage> {
                                             color: (isDarkBg
                                                     ? Colors.white
                                                     : const Color(0xFF3B9EFE))
-                                                .withOpacity(0.15),
+                                                .withValues(alpha: 0.15),
                                             borderRadius:
                                                 BorderRadius.circular(12),
                                             border: Border.all(
                                               color: (isDarkBg
                                                       ? Colors.white
                                                       : const Color(0xFF3B9EFE))
-                                                  .withOpacity(0.3),
+                                                  .withValues(alpha: 0.3),
                                             ),
                                           ),
                                           child: Row(
@@ -1927,16 +2004,17 @@ class _ComposePageState extends State<ComposePage> {
                                   style: GoogleFonts.getFont(
                                     _fontFamily,
                                     fontSize: _fontSize,
-                                    color:
-                                        _textColor == Colors.black && isDarkBg
-                                            ? Colors.white.withOpacity(0.9)
-                                            : _textColor,
+                                    color: _textColor == Colors.black &&
+                                            isDarkBg
+                                        ? Colors.white.withValues(alpha: 0.9)
+                                        : _textColor,
                                   ),
                                   decoration: InputDecoration(
                                     hintText: 'Start typing here...',
                                     hintStyle: GoogleFonts.getFont(
                                       _fontFamily,
-                                      color: contentColor.withOpacity(0.6),
+                                      color:
+                                          contentColor.withValues(alpha: 0.6),
                                       fontSize: _fontSize,
                                     ),
                                     border: InputBorder.none,
@@ -1965,7 +2043,7 @@ class _ComposePageState extends State<ComposePage> {
                                             boxShadow: [
                                               BoxShadow(
                                                 color: Colors.black
-                                                    .withOpacity(0.05),
+                                                    .withValues(alpha: 0.05),
                                                 blurRadius: 5,
                                               ),
                                             ],
@@ -2035,7 +2113,7 @@ class _ComposePageState extends State<ComposePage> {
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
+                              color: Colors.black.withValues(alpha: 0.06),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             ),
@@ -2062,7 +2140,7 @@ class _ComposePageState extends State<ComposePage> {
                             _ToolbarIcon(
                               icon: Icons.sentiment_satisfied_alt_rounded,
                               color: const Color(0xFF3B9EFE),
-                              onTap: _showEmojiPicker,
+                              onTap: _showEmojiLibrary,
                             ),
                             _ToolbarIcon(
                               icon: Icons.local_offer_outlined,
@@ -2327,7 +2405,7 @@ class _TagsSheetState extends State<_TagsSheet> {
                             horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? const Color(0xFF3B9EFE).withOpacity(0.1)
+                              ? const Color(0xFF3B9EFE).withValues(alpha: 0.1)
                               : const Color(0xFFF5F8FC),
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(

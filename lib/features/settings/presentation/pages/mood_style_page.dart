@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:diary_with_lock/core/widgets/themed_background.dart';
 
@@ -16,51 +17,87 @@ class _MoodStylePageState extends State<MoodStylePage> {
 
   final List<Map<String, dynamic>> _moodPacks = [
     {
-      'name': 'Mood - Cat',
-      'icons': [
-        Icons.pets_rounded,
-        Icons.sentiment_satisfied_alt_rounded,
-        Icons.sentiment_very_satisfied_rounded,
-        Icons.sentiment_neutral_rounded,
-        Icons.sentiment_dissatisfied_rounded,
-        Icons.local_florist_rounded,
-      ],
-      'isIcon': true,
-    },
-    {
       'name': 'Normal Mood Pack',
       'emojis': ['😊', '😔', '😡', '😴', '🤔', '🥳'],
       'isIcon': false,
     },
     {
       'name': 'Animals Mood',
-      'emojis': ['🐰', '🐷', '🐨', '🐱', '🐶', '🐹'],
+      'emojis': [
+        'assets/emojis/Animals_Mood/1.webp',
+        'assets/emojis/Animals_Mood/2.webp',
+        'assets/emojis/Animals_Mood/3.webp',
+        'assets/emojis/Animals_Mood/4.webp',
+        'assets/emojis/Animals_Mood/5.webp',
+        'assets/emojis/Animals_Mood/6.webp'
+      ],
       'isIcon': false,
+      'isImage': true,
     },
     {
       'name': 'Aqua Mood',
       'emojis': [
-        '😍',
-        '😊',
-        '😎',
-        '😂',
-        '😐',
-        '🥹'
-      ], // Using emojis that look like the blue bubbles if possible
+        'assets/emojis/Aqua_Mood/1.webp',
+        'assets/emojis/Aqua_Mood/2.webp',
+        'assets/emojis/Aqua_Mood/3.webp',
+        'assets/emojis/Aqua_Mood/4.webp',
+        'assets/emojis/Aqua_Mood/5.webp',
+        'assets/emojis/Aqua_Mood/6.webp'
+      ],
       'isIcon': false,
-      'isAqua': true, // Custom flag to apply blue styling if needed
+      'isImage': true,
     },
     {
-      'name': 'Cute Pet Mood',
-      'emojis': ['🐱', '😸', '😹', '😻', '😼', '😽'],
+      'name': 'Cat Mood',
+      'emojis': [
+        'assets/emojis/Cat_Mood/Icon.svg',
+        'assets/emojis/Cat_Mood/Icon_1.svg',
+        'assets/emojis/Cat_Mood/Icon_2.svg',
+        'assets/emojis/Cat_Mood/Icon_3.svg',
+        'assets/emojis/Cat_Mood/Icon_4.svg',
+        'assets/emojis/Cat_Mood/Icon_5.svg'
+      ],
       'isIcon': false,
+      'isSvg': true,
+    },
+    {
+      'name': 'Pet Mood',
+      'emojis': [
+        'assets/emojis/Pet_Mood/1.webp',
+        'assets/emojis/Pet_Mood/2.webp',
+        'assets/emojis/Pet_Mood/3.webp',
+        'assets/emojis/Pet_Mood/5.webp',
+        'assets/emojis/Pet_Mood/6.webp',
+        'assets/emojis/Pet_Mood/6_1.webp'
+      ],
+      'isIcon': false,
+      'isImage': true,
     },
   ];
 
   @override
   void initState() {
     super.initState();
-    _selectedMood = StorageUtil.getString('mood_style') ?? 'Mood - Cat';
+    _selectedMood = StorageUtil.getString('mood_style') ?? 'Normal Mood Pack';
+  }
+
+  Alignment _getAlignmentForIndex(int index) {
+    switch (index) {
+      case 0:
+        return Alignment.topLeft;
+      case 1:
+        return Alignment.topCenter;
+      case 2:
+        return Alignment.topRight;
+      case 3:
+        return Alignment.centerLeft;
+      case 4:
+        return Alignment.center;
+      case 5:
+        return Alignment.centerRight;
+      default:
+        return Alignment.center;
+    }
   }
 
   @override
@@ -181,7 +218,12 @@ class _MoodStylePageState extends State<MoodStylePage> {
                               ),
                               itemCount: 6,
                               itemBuilder: (ctx, index) {
-                                final isIcon = pack['isIcon'] as bool;
+                                final emojis = (pack['emojis'] as List?);
+                                final icons = (pack['icons'] as List?);
+                                final isIcon = pack['isIcon'] as bool? ?? false;
+                                final isSvg = pack['isSvg'] as bool? ?? false;
+                                final isImage =
+                                    pack['isImage'] as bool? ?? false;
                                 final isAqua = pack['isAqua'] == true;
                                 return Container(
                                   decoration: BoxDecoration(
@@ -192,20 +234,68 @@ class _MoodStylePageState extends State<MoodStylePage> {
                                   ),
                                   child: Center(
                                     child: isIcon
-                                        ? Icon(
-                                            (pack['icons'] as List)[index],
-                                            color: const Color(0xFF3B9EFE),
-                                            size: 36,
-                                          )
-                                        : Text(
-                                            (pack['emojis'] as List)[index],
-                                            style: TextStyle(
-                                              fontSize: 32,
-                                              color: isAqua
-                                                  ? const Color(0xFF3B9EFE)
-                                                  : null,
-                                            ),
-                                          ),
+                                        ? (icons != null && index < icons.length
+                                            ? Icon(
+                                                icons[index],
+                                                color: const Color(0xFF3B9EFE),
+                                                size: 36,
+                                              )
+                                            : const SizedBox.shrink())
+                                        : isSvg
+                                            ? (emojis != null &&
+                                                    index < emojis.length
+                                                ? SvgPicture.asset(
+                                                    emojis[index],
+                                                    fit: BoxFit.contain,
+                                                    clipBehavior: Clip.none,
+                                                    placeholderBuilder:
+                                                        (context) =>
+                                                            const Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color:
+                                                            Color(0xFF3B9EFE),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : const SizedBox.shrink())
+                                            : isImage
+                                                ? (emojis != null &&
+                                                        index < emojis.length
+                                                    ? Container(
+                                                        width: 50,
+                                                        height: 50,
+                                                        child: ClipRect(
+                                                          child: OverflowBox(
+                                                            maxWidth: 150,
+                                                            maxHeight: 150,
+                                                            alignment:
+                                                                _getAlignmentForIndex(
+                                                                    index),
+                                                            child: Image.asset(
+                                                              emojis[index],
+                                                              width: 150,
+                                                              height: 150,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : const SizedBox.shrink())
+                                                : (emojis != null &&
+                                                        index < emojis.length
+                                                    ? Text(
+                                                        emojis[index],
+                                                        style: TextStyle(
+                                                          fontSize: 32,
+                                                          color: isAqua
+                                                              ? const Color(
+                                                                  0xFF3B9EFE)
+                                                              : null,
+                                                        ),
+                                                      )
+                                                    : const SizedBox.shrink()),
                                   ),
                                 );
                               },

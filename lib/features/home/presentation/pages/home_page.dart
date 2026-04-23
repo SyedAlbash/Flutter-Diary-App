@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
 import 'package:diary_with_lock/features/settings/presentation/pages/settings_page.dart';
@@ -381,7 +382,7 @@ class _EmptyState extends StatelessWidget {
           child: GestureDetector(
             onTap: () => Get.toNamed(AppRoutes.compose),
             child: Image.asset(
-              'assets/images/screens/Main Feature Card.png',
+              'assets/screens/Main Feature Card.webp',
               width: double.infinity,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
@@ -546,7 +547,7 @@ class _EntryCard extends StatelessWidget {
           child: Container(
             margin: const EdgeInsets.only(bottom: 12),
             decoration: BoxDecoration(
-              color: bgColor ?? tc.currentTheme.cardBg.withOpacity(0.85),
+              color: bgColor ?? tc.currentTheme.cardBg.withValues(alpha: 0.85),
               image: isAsset
                   ? DecorationImage(
                       image: AssetImage(entry.backgroundColor),
@@ -556,7 +557,7 @@ class _EntryCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -572,8 +573,8 @@ class _EntryCard extends StatelessWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black.withOpacity(0.05),
-                          Colors.black.withOpacity(0.3),
+                          Colors.black.withValues(alpha: 0.05),
+                          Colors.black.withValues(alpha: 0.3),
                         ],
                       )
                     : null,
@@ -612,7 +613,7 @@ class _EntryCard extends StatelessWidget {
                   Container(
                     width: 1,
                     height: 40,
-                    color: contentColor.withOpacity(0.1),
+                    color: contentColor.withValues(alpha: 0.1),
                   ),
                   const SizedBox(width: 16),
                   // Content
@@ -686,16 +687,34 @@ class _EntryCard extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.12),
+                                    color: Colors.black.withValues(alpha: 0.12),
                                     blurRadius: 6,
                                     offset: const Offset(0, 3),
                                   ),
                                 ],
                               ),
-                              child: Text(
-                                entry.mood,
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                              child: entry.mood.isEmpty
+                                  ? const SizedBox.shrink()
+                                  : entry.mood.endsWith('.svg')
+                                      ? SvgPicture.asset(
+                                          entry.mood,
+                                          width: 24,
+                                          height: 24,
+                                          fit: BoxFit.contain,
+                                        )
+                                      : entry.mood.endsWith('.png') ||
+                                              entry.mood.endsWith('.webp')
+                                          ? Image.asset(
+                                              entry.mood,
+                                              width: 24,
+                                              height: 24,
+                                              fit: BoxFit.contain,
+                                            )
+                                          : Text(
+                                              entry.mood,
+                                              style:
+                                                  const TextStyle(fontSize: 18),
+                                            ),
                             ),
                           ),
                       ],

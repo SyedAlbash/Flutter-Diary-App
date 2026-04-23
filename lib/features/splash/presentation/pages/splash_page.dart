@@ -15,7 +15,7 @@ class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnim;
-  bool _ready = false;
+  bool _showOnboarding = false;
 
   @override
   void initState() {
@@ -25,8 +25,23 @@ class _SplashPageState extends State<SplashPage>
     _fadeAnim = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
 
-    // Check onboarding status immediately since services are now pre-initialized in main.dart
-    _navigateAfterSplash();
+    // Check onboarding status
+    _checkStatus();
+  }
+
+  void _checkStatus() {
+    final bool onboardingDone =
+        StorageUtil.getBool(StorageUtil.keyOnboardingDone, defaultValue: false);
+
+    if (onboardingDone) {
+      // Returning user - auto navigate after delay
+      _navigateAfterSplash();
+    } else {
+      // New user - show "Let's Start" button
+      setState(() {
+        _showOnboarding = true;
+      });
+    }
   }
 
   Future<void> _navigateAfterSplash() async {
@@ -35,31 +50,26 @@ class _SplashPageState extends State<SplashPage>
 
     if (!mounted) return;
 
-    final onboardingDone = StorageUtil.getBool(StorageUtil.keyOnboardingDone);
+    final lockType = StorageUtil.getString(StorageUtil.keyLockType);
 
-    if (onboardingDone) {
-      final lockType = StorageUtil.getString(StorageUtil.keyLockType);
-      if (lockType == 'pattern') {
-        Get.offAllNamed('${AppRoutes.confirmPattern}/verify');
-      } else if (lockType == 'pin') {
-        Get.offAllNamed('${AppRoutes.confirmPin}/verify');
-      } else {
-        // No lock set, navigate directly to home
-        Get.offAllNamed(AppRoutes.home);
-      }
+    if (lockType == 'pattern') {
+      Get.offAllNamed('${AppRoutes.confirmPattern}/verify');
+    } else if (lockType == 'pin') {
+      Get.offAllNamed('${AppRoutes.confirmPin}/verify');
     } else {
-      setState(() => _ready = true);
+      Get.offAllNamed(AppRoutes.home);
     }
+  }
+
+  void _onStartPressed() {
+    StorageUtil.setBool(StorageUtil.keyOnboardingDone, true);
+    Get.offAllNamed(AppRoutes.home);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  void _onStart() {
-    Get.offAllNamed(AppRoutes.setPin);
   }
 
   @override
@@ -97,43 +107,43 @@ class _SplashPageState extends State<SplashPage>
                               FadeTransition(
                                 opacity: _fadeAnim,
                                 child: Image.asset(
-                                  'assets/images/screens/Group 162759.png',
-                                  width: 180,
-                                  height: 180,
+                                  'assets/screens/Group 162759.webp',
+                                  width: 150, // Smaller icon
+                                  height: 150,
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
                                     debugPrint(
                                         "Splash Image Load Error: $error");
                                     return Image.asset(
-                                      'assets/images/screens/Splash Screen.png',
-                                      width: 180,
-                                      height: 180,
+                                      'assets/screens/Splash Screen.webp',
+                                      width: 150,
+                                      height: 150,
                                     );
                                   },
                                 ),
                               ),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: 24),
                               // Logo or App Name
                               FadeTransition(
                                 opacity: _fadeAnim,
                                 child: Text(
                                   AppStrings.appName,
                                   style: GoogleFonts.pacifico(
-                                    fontSize: 32,
+                                    fontSize: 28, // Smaller text
                                     color: const Color(0xFF1A1A1A),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 8),
                               FadeTransition(
                                 opacity: _fadeAnim,
                                 child: Text(
                                   AppStrings.appTagline,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    color: Colors.black.withOpacity(0.7),
+                                    fontSize: 13, // Smaller text
+                                    color: Colors.black.withValues(alpha: 0.7),
                                     letterSpacing: 0.2,
                                   ),
                                 ),
@@ -146,73 +156,68 @@ class _SplashPageState extends State<SplashPage>
                     ),
                   ),
 
-                  // Bottom button
-                  if (_ready)
-                    Positioned(
-                      left: 40,
-                      right: 40,
-                      bottom: 60,
-                      child: FadeTransition(
-                        opacity: _fadeAnim,
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color(0xFF64B5F6),
-                                Color(0xFF2196F3),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF2196F3)
-                                    .withValues(alpha: 0.3),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: ElevatedButton(
-                            onPressed: _onStart,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                  // Loading indicator or Let's Start button
+                  Positioned(
+                    bottom: 60,
+                    left: 40,
+                    right: 40,
+                    child: FadeTransition(
+                      opacity: _fadeAnim,
+                      child: _showOnboarding
+                          ? _buildStartButton()
+                          : const Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF2196F3),
+                                strokeWidth: 3,
                               ),
                             ),
-                            child: Text(
-                              AppStrings.letsStart,
-                              style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
-
-                  // Loading indicator
-                  if (!_ready)
-                    const Positioned(
-                      bottom: 80,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0xFF2196F3),
-                          strokeWidth: 3,
-                        ),
-                      ),
-                    ),
+                  ),
                 ],
               );
             },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStartButton() {
+    return Container(
+      width: double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF64B5F6),
+            Color(0xFF2196F3),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2196F3).withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _onStartPressed,
+          borderRadius: BorderRadius.circular(16),
+          child: Center(
+            child: Text(
+              AppStrings.letsStart,
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
       ),

@@ -153,7 +153,7 @@ class _PatternScaffold extends StatelessWidget {
                             // Diary Illustration
                             Center(
                               child: Image.asset(
-                                'assets/images/screens/Group 162759.png',
+                                'assets/screens/Group 162759.webp',
                                 height: 110,
                                 fit: BoxFit.contain,
                               ),

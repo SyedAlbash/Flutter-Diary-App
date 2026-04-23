@@ -266,7 +266,7 @@ class _Divider extends StatelessWidget {
     return Divider(
       height: 1,
       thickness: 1,
-      color: Colors.grey.withOpacity(0.08),
+      color: Colors.grey.withValues(alpha: 0.08),
       indent: 76,
       endIndent: 16,
     );

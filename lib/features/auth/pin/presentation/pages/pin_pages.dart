@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
 import 'package:diary_with_lock/features/auth/pin/presentation/controllers/pin_controller.dart';
@@ -30,7 +29,6 @@ class _SetPinPageState extends State<SetPinPage> {
         final currentTheme = tc.getThemeFor(route: Get.currentRoute);
         final isDark = currentTheme.brightness == Brightness.dark;
         final textColor = isDark ? Colors.white : const Color(0xFF1A1A1A);
-        final subTextColor = isDark ? Colors.white70 : const Color(0xFF7F8C8D);
 
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -59,7 +57,7 @@ class _SetPinPageState extends State<SetPinPage> {
                             // Diary Illustration
                             Center(
                               child: Image.asset(
-                                'assets/images/screens/Group 162759.png',
+                                'assets/screens/Group 162759.webp',
                                 height: 110,
                                 fit: BoxFit.contain,
                               ),
@@ -280,7 +278,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
                             // Diary Illustration
                             Center(
                               child: Image.asset(
-                                'assets/images/screens/Group 162759.png',
+                                'assets/screens/Group 162759.webp',
                                 height: 110,
                                 fit: BoxFit.contain,
                               ),
@@ -394,8 +392,9 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
                                         if (widget.isVerify) {
                                           final ok =
                                               await controller.verifyPin();
-                                          if (ok)
+                                          if (ok) {
                                             Get.offAllNamed(AppRoutes.home);
+                                          }
                                         } else {
                                           final ok =
                                               await controller.confirmPin();

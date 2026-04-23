@@ -83,7 +83,7 @@ class ThemeController extends GetxController {
       patternDot: Color(0xFFFFB74D),
       gradientColors: [Color(0xFF1A0C04), Color(0xFF3E2010)],
       brightness: Brightness.dark,
-      backgroundImage: 'assets/images/themes/2.png',
+      backgroundImage: 'assets/themes/2.webp',
     ),
     // 2 - Magic (4.png – girl on bike, light purple road)
     AppThemeData(
@@ -100,7 +100,7 @@ class ThemeController extends GetxController {
       pinCircle: Color(0xFF7B1FA2),
       patternDot: Color(0xFF7B1FA2),
       gradientColors: [Color(0xFF7B1FA2), Color(0xFFC4B0D8)],
-      backgroundImage: 'assets/images/themes/4.png',
+      backgroundImage: 'assets/themes/4.webp',
     ),
     // 3 - Ethereal (8.png – unicorn, light lavender/pink)
     AppThemeData(
@@ -117,7 +117,7 @@ class ThemeController extends GetxController {
       pinCircle: Color(0xFF8E4EC6),
       patternDot: Color(0xFF8E4EC6),
       gradientColors: [Color(0xFF8E4EC6), Color(0xFFBEB0D8)],
-      backgroundImage: 'assets/images/themes/8.png',
+      backgroundImage: 'assets/themes/8.webp',
     ),
     // 4 - Cloudy (9.png – girl reading under moonlight, dark navy)
     AppThemeData(
@@ -135,7 +135,7 @@ class ThemeController extends GetxController {
       patternDot: Color(0xFFFDD835),
       gradientColors: [Color(0xFF0A1430), Color(0xFF1A3060)],
       brightness: Brightness.dark,
-      backgroundImage: 'assets/images/themes/9.png',
+      backgroundImage: 'assets/themes/9.webp',
     ),
     // 5 - Galaxy (11.png – sunset palm trees, warm sandy bottom)
     AppThemeData(
@@ -152,7 +152,7 @@ class ThemeController extends GetxController {
       pinCircle: Color(0xFF1A5276),
       patternDot: Color(0xFF1A5276),
       gradientColors: [Color(0xFF1A5276), Color(0xFFF0C878)],
-      backgroundImage: 'assets/images/themes/11.png',
+      backgroundImage: 'assets/themes/11.webp',
     ),
     // 6 - Bloom (14.png – carnival fireworks, dark magenta/purple)
     AppThemeData(
@@ -170,7 +170,7 @@ class ThemeController extends GetxController {
       patternDot: Color(0xFFFF8A65),
       gradientColors: [Color(0xFF3A1028), Color(0xFF6A2050)],
       brightness: Brightness.dark,
-      backgroundImage: 'assets/images/themes/14.png',
+      backgroundImage: 'assets/themes/14.webp',
     ),
     // 7 - Sunny (15.png – mushroom candy land, salmon pink)
     AppThemeData(
@@ -187,7 +187,7 @@ class ThemeController extends GetxController {
       pinCircle: Color(0xFFC62828),
       patternDot: Color(0xFFC62828),
       gradientColors: [Color(0xFFC62828), Color(0xFFE8A098)],
-      backgroundImage: 'assets/images/themes/15.png',
+      backgroundImage: 'assets/themes/15.webp',
     ),
     // 8 - Ocean (16.png – girl by night ocean, dark teal-blue)
     AppThemeData(
@@ -205,7 +205,7 @@ class ThemeController extends GetxController {
       patternDot: Color(0xFFE040FB),
       gradientColors: [Color(0xFF003850), Color(0xFF106880)],
       brightness: Brightness.dark,
-      backgroundImage: 'assets/images/themes/16.png',
+      backgroundImage: 'assets/themes/16.webp',
     ),
     // 9 - Rose (17.png – bunnies in flower garden, dark green)
     AppThemeData(
@@ -223,7 +223,7 @@ class ThemeController extends GetxController {
       patternDot: Color(0xFF81C784),
       gradientColors: [Color(0xFF2A4A30), Color(0xFF3A6A40)],
       brightness: Brightness.dark,
-      backgroundImage: 'assets/images/themes/17.png',
+      backgroundImage: 'assets/themes/17.webp',
     ),
     // 10 - Twilight (28.png – cyclist with balloons, light cream)
     AppThemeData(
@@ -240,7 +240,7 @@ class ThemeController extends GetxController {
       pinCircle: Color(0xFF5C6BC0),
       patternDot: Color(0xFF5C6BC0),
       gradientColors: [Color(0xFF5C6BC0), Color(0xFFF5ECE0)],
-      backgroundImage: 'assets/images/themes/28.png',
+      backgroundImage: 'assets/themes/28.webp',
     ),
     // 11 - Mystery (30.png – adventure van in mountains, pink)
     AppThemeData(
@@ -257,7 +257,7 @@ class ThemeController extends GetxController {
       pinCircle: Color(0xFFD81B60),
       patternDot: Color(0xFFD81B60),
       gradientColors: [Color(0xFFD81B60), Color(0xFFF8A0C8)],
-      backgroundImage: 'assets/images/themes/30.png',
+      backgroundImage: 'assets/themes/30.webp',
     ),
   ];
 

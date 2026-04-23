@@ -115,7 +115,7 @@ class _DeleteWarningDialog extends StatelessWidget {
           children: [
             // Warning illustration
             Image.asset(
-              'assets/images/screens/Delete Date Card.png',
+              'assets/screens/Delete Date Card.webp',
               width: 180,
               fit: BoxFit.contain,
             ),

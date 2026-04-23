@@ -116,7 +116,7 @@ class _SecurityQuestionPageState extends State<SecurityQuestionPage> {
                         const SizedBox(height: 40),
                         Center(
                           child: Image.asset(
-                            'assets/images/screens/Group 162759.png',
+                            'assets/screens/Group 162759.webp',
                             height: 120,
                           ),
                         ),

@@ -86,7 +86,8 @@ class _DrawingPageState extends State<DrawingPage> {
                           borderRadius: BorderRadius.circular(18),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF3B9EFE).withOpacity(0.35),
+                              color: const Color(0xFF3B9EFE)
+                                  .withValues(alpha: 0.35),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -243,7 +244,7 @@ class _DrawingPageState extends State<DrawingPage> {
           boxShadow: [
             if (selected)
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               )

@@ -117,7 +117,7 @@ class _EmptyGallery extends StatelessWidget {
           SizedBox(
             width: 300,
             child: Image.asset(
-              'assets/images/screens/Margin.png',
+              'assets/screens/Margin.webp',
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.photo_library_outlined,
