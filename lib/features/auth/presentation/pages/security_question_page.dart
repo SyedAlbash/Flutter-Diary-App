@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:diary_with_lock/core/widgets/themed_background.dart';
 
@@ -126,7 +126,7 @@ class _SecurityQuestionPageState extends State<SecurityQuestionPage> {
                               ? 'Security Recovery'
                               : 'Security Question',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
+                          style: AppTextStyles.poppins(
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFF1A1C1E),
@@ -138,7 +138,7 @@ class _SecurityQuestionPageState extends State<SecurityQuestionPage> {
                               ? 'Please answer your security question to reset your lock'
                               : 'This will help you recover your diary if you forget your lock',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
+                          style: AppTextStyles.poppins(
                             fontSize: 14,
                             color: const Color(0xFF7F8C8D),
                           ),
@@ -155,7 +155,7 @@ class _SecurityQuestionPageState extends State<SecurityQuestionPage> {
                             ),
                             child: Text(
                               _selectedQuestion ?? 'No question set',
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: const Color(0xFF1A1C1E),
@@ -180,7 +180,7 @@ class _SecurityQuestionPageState extends State<SecurityQuestionPage> {
                                     value: q,
                                     child: Text(q,
                                         style:
-                                            GoogleFonts.poppins(fontSize: 14)),
+                                            AppTextStyles.poppins(fontSize: 14)),
                                   );
                                 }).toList(),
                                 onChanged: (val) =>
@@ -198,10 +198,10 @@ class _SecurityQuestionPageState extends State<SecurityQuestionPage> {
                           ),
                           child: TextField(
                             controller: _answerController,
-                            style: GoogleFonts.poppins(fontSize: 16),
+                            style: AppTextStyles.poppins(fontSize: 16),
                             decoration: InputDecoration(
                               hintText: 'Your answer...',
-                              hintStyle: GoogleFonts.poppins(
+                              hintStyle: AppTextStyles.poppins(
                                 color: const Color(0xFFBDC3C7),
                                 fontSize: 14,
                               ),
@@ -227,7 +227,7 @@ class _SecurityQuestionPageState extends State<SecurityQuestionPage> {
                             widget.isRecovery
                                 ? 'Verify & Remove Lock'
                                 : 'Save & Continue',
-                            style: GoogleFonts.poppins(
+                            style: AppTextStyles.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),

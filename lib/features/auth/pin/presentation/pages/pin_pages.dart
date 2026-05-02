@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
 import 'package:diary_with_lock/features/auth/pin/presentation/controllers/pin_controller.dart';
@@ -101,7 +101,7 @@ class _SetPinPageState extends State<SetPinPage> {
                                           child: Text(
                                             'Password',
                                             textAlign: TextAlign.center,
-                                            style: GoogleFonts.poppins(
+                                            style: AppTextStyles.poppins(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w600,
                                               fontSize: 14,
@@ -125,7 +125,7 @@ class _SetPinPageState extends State<SetPinPage> {
                                           child: Text(
                                             'Pattern',
                                             textAlign: TextAlign.center,
-                                            style: GoogleFonts.poppins(
+                                            style: AppTextStyles.poppins(
                                               color: isDark
                                                   ? Colors.white
                                                   : const Color(0xFF2C3E50),
@@ -143,7 +143,7 @@ class _SetPinPageState extends State<SetPinPage> {
                             const SizedBox(height: 10),
                             Text(
                               'Enter New Passcode!',
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
                                 color: textColor,
@@ -204,7 +204,7 @@ class _SetPinPageState extends State<SetPinPage> {
                               ),
                               child: Text(
                                 'Continue',
-                                style: GoogleFonts.poppins(
+                                style: AppTextStyles.poppins(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -288,7 +288,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
                               widget.isVerify
                                   ? 'Enter Passcode'
                                   : 'Confirm Passcode!',
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
                                 color: textColor,
@@ -299,7 +299,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
                               widget.isVerify
                                   ? 'Welcome back! Please enter your PIN.'
                                   : 'Let\'s double check that PIN.',
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 14,
                                 color: subTextColor,
                               ),
@@ -361,7 +361,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
                                   ),
                                   child: Text(
                                     'Forgot Password',
-                                    style: GoogleFonts.poppins(
+                                    style: AppTextStyles.poppins(
                                       color: const Color(0xFF3B9EFE),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
@@ -419,7 +419,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
                                 ),
                                 child: Text(
                                   widget.isVerify ? 'Unlock' : 'Confirm',
-                                  style: GoogleFonts.poppins(
+                                  style: AppTextStyles.poppins(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -536,7 +536,7 @@ class _Numpad extends StatelessWidget {
         child: Center(
           child: Text(
             digit,
-            style: GoogleFonts.poppins(
+            style: AppTextStyles.poppins(
               fontSize: 24,
               fontWeight: FontWeight.w600,
               color: isDark ? Colors.white : const Color(0xFF1A1A1A),

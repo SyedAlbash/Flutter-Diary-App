@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:diary_with_lock/core/services/notification_service.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'feedback_page.dart';
@@ -38,7 +38,7 @@ class SettingsPage extends StatelessWidget {
               padding: const EdgeInsets.only(left: 24, top: 16, bottom: 24),
               child: Text(
                 'Settings',
-                style: GoogleFonts.yellowtail(
+                style: AppTextStyles.yellowtail(
                   fontSize: 32,
                   fontWeight: FontWeight.w500,
                   color: const Color(0xFF1A1A1A),
@@ -104,7 +104,7 @@ class SettingsPage extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 'Daily Reminders',
-                                style: GoogleFonts.poppins(
+                                style: AppTextStyles.poppins(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: const Color(0xFF1A1A1A),
@@ -129,7 +129,7 @@ class SettingsPage extends StatelessWidget {
                                 children: [
                                   Text(
                                     controller.formattedReminderTime,
-                                    style: GoogleFonts.poppins(
+                                    style: AppTextStyles.poppins(
                                       fontSize: 32,
                                       fontWeight: FontWeight.w700,
                                       color: const Color(0xFF2C3E50),
@@ -268,7 +268,7 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(left: 4),
       child: Text(
         label,
-        style: GoogleFonts.poppins(
+        style: AppTextStyles.poppins(
           fontSize: 13,
           fontWeight: FontWeight.w700,
           color: const Color(0xFF7F8C8D),
@@ -358,7 +358,7 @@ class _SettingsRow extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: GoogleFonts.poppins(
+                style: AppTextStyles.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: labelColor ?? const Color(0xFF1A1A1A),
@@ -412,7 +412,7 @@ class _RateUsDialog extends StatelessWidget {
             Text(
               'Enjoying the App?',
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: AppTextStyles.poppins(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
                 color: const Color(0xFF1A1A1A),
@@ -422,7 +422,7 @@ class _RateUsDialog extends StatelessWidget {
             Text(
               'If you love our app, please take a moment to rate us on the Play Store!',
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: AppTextStyles.poppins(
                 fontSize: 14,
                 color: const Color(0xFF7F8C8D),
                 height: 1.5,
@@ -442,7 +442,7 @@ class _RateUsDialog extends StatelessWidget {
                     ),
                     child: Text(
                       'Maybe Later',
-                      style: GoogleFonts.poppins(
+                      style: AppTextStyles.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF7F8C8D),
@@ -471,7 +471,7 @@ class _RateUsDialog extends StatelessWidget {
                     ),
                     child: Text(
                       'Rate Now',
-                      style: GoogleFonts.poppins(
+                      style: AppTextStyles.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -503,7 +503,7 @@ class _PasscodeStatus extends StatelessWidget {
       ),
       child: Text(
         hasLock ? 'Enabled' : 'Disabled',
-        style: GoogleFonts.poppins(
+        style: AppTextStyles.poppins(
           fontSize: 11,
           fontWeight: FontWeight.w600,
           color: hasLock ? const Color(0xFF2E7D32) : const Color(0xFF7F8C8D),

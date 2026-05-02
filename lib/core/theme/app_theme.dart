@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
+
+/// Helper function to apply Poppins font to a TextTheme
+TextTheme _poppinsTextTheme([TextTheme? base]) {
+  base ??= ThemeData.light().textTheme;
+  return base.apply(
+    fontFamily: 'Poppins',
+  );
+}
 
 /// Dynamic AppColors that read from the currently active theme.
 /// Falls back to Sky Blue defaults if ThemeController isn't registered yet
 /// (e.g. during splash before GetX is ready).
 class AppColors {
   static AppThemeData get _t {
-    return ThemeController.themes[0]; // Always return Sky Blue as default for non-home screens
+    return ThemeController
+        .themes[0]; // Always return Sky Blue as default for non-home screens
   }
 
   static Color get primary => _t.primary;
@@ -41,7 +49,7 @@ class AppTheme {
           primary: Color(0xFF5B9BD5),
           secondary: Color(0xFFFFB6C1),
         ),
-        textTheme: GoogleFonts.poppinsTextTheme(),
+        textTheme: _poppinsTextTheme(),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF5B9BD5),

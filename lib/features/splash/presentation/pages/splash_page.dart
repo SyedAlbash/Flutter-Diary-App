@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 
 class SplashPage extends StatefulWidget {
@@ -80,11 +80,11 @@ class _SplashPageState extends State<SplashPage>
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              Color(0xFFE0F2FD), // New Light blue top
-              Color(0xFFF9E8F5), // New Light pink bottom
+              Color(0xFFE0F2FD),
+              Color(0xFFF9E8F5),
             ],
           ),
         ),
@@ -124,28 +124,25 @@ class _SplashPageState extends State<SplashPage>
                               ),
                               const SizedBox(height: 24),
                               // Logo or App Name
-                              FadeTransition(
-                                opacity: _fadeAnim,
-                                child: Text(
+                                Text(
                                   AppStrings.appName,
-                                  style: GoogleFonts.pacifico(
-                                    fontSize: 28, // Smaller text
+                                  style: AppTextStyles.lilyScriptOne(
+                                    fontSize: 31.67,
                                     color: const Color(0xFF1A1A1A),
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w400, // Regular
+                                    letterSpacing: 0.3167, // 1%
+                                    height: 1.367, // 43.3 line height
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              FadeTransition(
-                                opacity: _fadeAnim,
-                                child: Text(
-                                  AppStrings.appTagline,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13, // Smaller text
-                                    color: Colors.black.withValues(alpha: 0.7),
-                                    letterSpacing: 0.2,
-                                  ),
+                              const SizedBox(height: 12),
+                              Text(
+                                AppStrings.appTagline,
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.poppins(
+                                  fontSize: 14,
+                                  color: const Color(0xFF1A1A1A).withValues(alpha: 0.8),
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.1,
                                 ),
                               ),
                               const SizedBox(height: 120),
@@ -212,10 +209,11 @@ class _SplashPageState extends State<SplashPage>
           child: Center(
             child: Text(
               AppStrings.letsStart,
-              style: GoogleFonts.poppins(
+              style: AppTextStyles.poppins(
                 fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: Colors.white,
+                letterSpacing: 0.5,
               ),
             ),
           ),

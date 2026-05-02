@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:diary_with_lock/core/services/notification_service.dart';
 
@@ -126,7 +126,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
         ),
         title: Text(
           'Daily Reminder',
-          style: GoogleFonts.poppins(
+          style: AppTextStyles.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: const Color(0xFF1A1A1A),
@@ -139,11 +139,11 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              Color(0xFFE0F2FD), // Light blue top
-              Color(0xFFF9E8F5), // Light pink bottom
+              Color(0xFFE0F2FD),
+              Color(0xFFF9E8F5),
             ],
           ),
         ),
@@ -174,7 +174,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                           children: [
                             Text(
                               'Daily Reminders',
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: const Color(0xFF2C3E50),
@@ -183,7 +183,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                             const SizedBox(height: 4),
                             Text(
                               'STAY CONSISTENT WITH YOUR\nDIARY',
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
                                 color: const Color(0xFF7F8C8D),
@@ -229,7 +229,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                     children: [
                       Text(
                         'SCHEDULED FOR',
-                        style: GoogleFonts.poppins(
+                        style: AppTextStyles.poppins(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                           color: const Color(0xFF7F8C8D),
@@ -245,7 +245,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                           children: [
                             Text(
                               '$_formattedHour:$_formattedMinute',
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 72,
                                 fontWeight: FontWeight.w700,
                                 color: const Color(0xFF3B9EFE),
@@ -258,7 +258,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                                   children: [
                                     Text(
                                       _period,
-                                      style: GoogleFonts.poppins(
+                                      style: AppTextStyles.poppins(
                                         fontSize: 24,
                                         fontWeight: FontWeight.w600,
                                         color: const Color(0xFF3B9EFE)
@@ -279,7 +279,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                       ),
                       Text(
                         'Tap to change',
-                        style: GoogleFonts.poppins(
+                        style: AppTextStyles.poppins(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: const Color(0xFF7F8C8D),
@@ -323,7 +323,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                           const SizedBox(width: 12),
                           Text(
                             'Repeat',
-                            style: GoogleFonts.poppins(
+                            style: AppTextStyles.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: const Color(0xFF2C3E50),
@@ -339,7 +339,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                             ),
                             child: Text(
                               '$_selectedDaysCount days selected',
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
                                 color: const Color(0xFF3B9EFE),
@@ -367,7 +367,7 @@ class _DailyRemindersPageState extends State<DailyRemindersPage> {
                               child: Center(
                                 child: Text(
                                   _dayLabels[i],
-                                  style: GoogleFonts.poppins(
+                                  style: AppTextStyles.poppins(
                                     fontSize: 12,
                                     color: isSelected
                                         ? Colors.white

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/widgets/themed_background.dart';
@@ -36,7 +36,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
       appBar: AppBar(
         title: Text(
           'Passcode Settings',
-          style: GoogleFonts.poppins(
+          style: AppTextStyles.poppins(
             color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -91,7 +91,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                         children: [
                           Text(
                             'Passcode Access',
-                            style: GoogleFonts.poppins(
+                            style: AppTextStyles.poppins(
                               fontSize: 17,
                               fontWeight: FontWeight.w700,
                               color: const Color(0xFF1A1A1A),
@@ -99,7 +99,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                           ),
                           Text(
                             'Enable / Disable',
-                            style: GoogleFonts.poppins(
+                            style: AppTextStyles.poppins(
                               fontSize: 13,
                               color: const Color(0xFF7F8C8D),
                               fontWeight: FontWeight.w500,
@@ -132,7 +132,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                 padding: const EdgeInsets.only(left: 4, bottom: 16),
                 child: Text(
                   'RELATED SETTINGS',
-                  style: GoogleFonts.poppins(
+                  style: AppTextStyles.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: const Color(0xFF7F8C8D),
@@ -230,7 +230,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.poppins(
+                    style: AppTextStyles.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF1A1A1A),
@@ -238,7 +238,7 @@ class _PasscodeSettingsPageState extends State<PasscodeSettingsPage> {
                   ),
                   Text(
                     subtitle,
-                    style: GoogleFonts.poppins(
+                    style: AppTextStyles.poppins(
                       fontSize: 12,
                       color: const Color(0xFF7F8C8D),
                     ),

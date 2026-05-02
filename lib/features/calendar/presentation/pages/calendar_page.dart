@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:diary_with_lock/features/home/presentation/controllers/home_controller.dart';
 import 'package:diary_with_lock/features/home/data/models/diary_entry.dart';
 import 'package:diary_with_lock/features/compose/presentation/pages/compose_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CalendarPage extends StatefulWidget {
   final bool embedded;
@@ -35,7 +36,7 @@ class _CalendarPageState extends State<CalendarPage> {
               padding: const EdgeInsets.only(left: 24, top: 16, bottom: 24),
               child: Text(
                 'Calendar',
-                style: GoogleFonts.yellowtail(
+                style: AppTextStyles.yellowtail(
                   fontSize: 32,
                   fontWeight: FontWeight.w500,
                   color: const Color(0xFF1A1A1A),
@@ -74,7 +75,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   titleCentered: false,
                   titleTextFormatter: (date, locale) =>
                       DateFormat('MMMM yyyy').format(date),
-                  titleTextStyle: GoogleFonts.poppins(
+                  titleTextStyle: AppTextStyles.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF1A1A1A),
@@ -89,12 +90,12 @@ class _CalendarPageState extends State<CalendarPage> {
                       color: Color(0xFF3B9EFE)),
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: GoogleFonts.poppins(
+                  weekdayStyle: AppTextStyles.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: const Color(0xFF95A5A6),
                   ),
-                  weekendStyle: GoogleFonts.poppins(
+                  weekendStyle: AppTextStyles.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: const Color(0xFF95A5A6),
@@ -114,22 +115,22 @@ class _CalendarPageState extends State<CalendarPage> {
                     shape: BoxShape.circle,
                     color: Colors.transparent,
                   ),
-                  todayTextStyle: GoogleFonts.poppins(
+                  todayTextStyle: AppTextStyles.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF3B9EFE),
                   ),
-                  defaultTextStyle: GoogleFonts.poppins(
+                  defaultTextStyle: AppTextStyles.poppins(
                     fontSize: 14,
                     color: const Color(0xFF2C3E50),
                     fontWeight: FontWeight.w500,
                   ),
-                  weekendTextStyle: GoogleFonts.poppins(
+                  weekendTextStyle: AppTextStyles.poppins(
                     fontSize: 14,
                     color: const Color(0xFF2C3E50),
                     fontWeight: FontWeight.w500,
                   ),
-                  selectedTextStyle: GoogleFonts.poppins(
+                  selectedTextStyle: AppTextStyles.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF3B9EFE),
@@ -151,10 +152,26 @@ class _CalendarPageState extends State<CalendarPage> {
                     }
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 4, right: 2),
-                      child: Text(
-                        moodEntry.mood,
-                        style: const TextStyle(fontSize: 16),
-                      ),
+                      child: () {
+                        String sanitizedMood = moodEntry.mood;
+                        sanitizedMood = sanitizedMood.replaceAll('.webp', '.png');
+                        sanitizedMood = sanitizedMood.replaceAll('Animals_Mood_', 'Animals_Mood');
+                        sanitizedMood = sanitizedMood.replaceAll('Aqua_Mood_', 'Aqua_Mood');
+                        sanitizedMood = sanitizedMood.replaceAll('Pet_Mood_', 'Pet_Mood');
+
+                        if (sanitizedMood.endsWith('.svg')) {
+                          return SvgPicture.asset(sanitizedMood, width: 16, height: 16);
+                        } else if (sanitizedMood.endsWith('.png')) {
+                          return Image.asset(
+                            sanitizedMood, 
+                            width: 16, 
+                            height: 16,
+                            errorBuilder: (_, __, ___) => const Icon(Icons.mood, size: 14),
+                          );
+                        } else {
+                          return Text(sanitizedMood, style: const TextStyle(fontSize: 16));
+                        }
+                      }(),
                     );
                   },
                 ),
@@ -175,7 +192,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Text(
                         DateFormat('EEEE, MMM d, yyyy').format(day),
-                        style: GoogleFonts.poppins(
+                        style: AppTextStyles.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF3B9EFE),
@@ -189,7 +206,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         child: Center(
                           child: Text(
                             'No Notes Found',
-                            style: GoogleFonts.poppins(
+                            style: AppTextStyles.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: const Color(0xFF7F8C8D),
@@ -259,10 +276,26 @@ class _CalendarEntryTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(22),
               ),
               child: Center(
-                child: Text(
-                  displayMood,
-                  style: const TextStyle(fontSize: 24),
-                ),
+                child: () {
+                  String sanitizedMood = displayMood;
+                  sanitizedMood = sanitizedMood.replaceAll('.webp', '.png');
+                  sanitizedMood = sanitizedMood.replaceAll('Animals_Mood_', 'Animals_Mood');
+                  sanitizedMood = sanitizedMood.replaceAll('Aqua_Mood_', 'Aqua_Mood');
+                  sanitizedMood = sanitizedMood.replaceAll('Pet_Mood_', 'Pet_Mood');
+
+                  if (sanitizedMood.endsWith('.svg')) {
+                    return SvgPicture.asset(sanitizedMood, width: 24, height: 24);
+                  } else if (sanitizedMood.endsWith('.png')) {
+                    return Image.asset(
+                      sanitizedMood, 
+                      width: 24, 
+                      height: 24,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.mood, size: 20),
+                    );
+                  } else {
+                    return Text(sanitizedMood, style: const TextStyle(fontSize: 24));
+                  }
+                }(),
               ),
             ),
             const SizedBox(width: 16),
@@ -274,7 +307,7 @@ class _CalendarEntryTile extends StatelessWidget {
                     displayTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.poppins(
+                    style: AppTextStyles.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF1A1A1A),
@@ -283,7 +316,7 @@ class _CalendarEntryTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     displayTime,
-                    style: GoogleFonts.poppins(
+                    style: AppTextStyles.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       color: const Color(0xFF95A5A6),

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
 import 'package:diary_with_lock/features/settings/presentation/pages/settings_page.dart';
 import 'package:diary_with_lock/features/home/presentation/controllers/home_controller.dart';
@@ -58,8 +58,8 @@ class HomePage extends StatelessWidget {
                           gradient: currentTheme.backgroundImage != null
                               ? null
                               : LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                   colors: currentTheme.gradientColors,
                                 ),
                           image: currentTheme.backgroundImage != null
@@ -210,7 +210,7 @@ class _BottomNav extends StatelessWidget {
                       ),
                       Text(
                         items[i]['label'] as String,
-                        style: GoogleFonts.poppins(
+                        style: AppTextStyles.poppins(
                           fontSize: 10,
                           color: selected
                               ? selectedColor
@@ -303,10 +303,10 @@ class _DiaryTabState extends State<_DiaryTab> {
                         child: TextField(
                           controller: _searchController,
                           autofocus: true,
-                          style: GoogleFonts.poppins(fontSize: 14),
+                          style: AppTextStyles.poppins(fontSize: 14),
                           decoration: InputDecoration(
                             hintText: 'Search by title...',
-                            hintStyle: GoogleFonts.poppins(
+                            hintStyle: AppTextStyles.poppins(
                                 fontSize: 14, color: Colors.grey),
                             border: InputBorder.none,
                             prefixIcon: const Icon(Icons.search,
@@ -453,7 +453,7 @@ class _EntriesList extends StatelessWidget {
                   const SizedBox(height: 16),
                   Text(
                     'No results found for "$query"',
-                    style: GoogleFonts.poppins(
+                    style: AppTextStyles.poppins(
                       fontSize: 16,
                       color: Colors.grey,
                     ),
@@ -480,7 +480,7 @@ class _EntriesList extends StatelessWidget {
                     children: [
                       Text(
                         item,
-                        style: GoogleFonts.poppins(
+                        style: AppTextStyles.poppins(
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
                           color: const Color(0xFF1A1C1E),
@@ -489,7 +489,7 @@ class _EntriesList extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         '${monthEntries[item]!.length} entries this month',
-                        style: GoogleFonts.poppins(
+                        style: AppTextStyles.poppins(
                           fontSize: 15,
                           color: const Color(0xFF3B9EFE),
                           fontWeight: FontWeight.w600,
@@ -590,7 +590,7 @@ class _EntryCard extends StatelessWidget {
                       children: [
                         Text(
                           DateFormat('dd').format(entry.date),
-                          style: GoogleFonts.poppins(
+                          style: AppTextStyles.poppins(
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFF3B9EFE),
@@ -598,7 +598,7 @@ class _EntryCard extends StatelessWidget {
                         ),
                         Text(
                           DateFormat('MMM').format(entry.date).toUpperCase(),
-                          style: GoogleFonts.poppins(
+                          style: AppTextStyles.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: const Color(0xFFBDC3C7),
@@ -628,7 +628,7 @@ class _EntryCard extends StatelessWidget {
                               entry.title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: const Color(0xFF1A1C1E),
@@ -639,7 +639,7 @@ class _EntryCard extends StatelessWidget {
                               entry.content,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 13,
                                 color: const Color(0xFF7F8C8D),
                                 height: 1.3,
@@ -653,7 +653,7 @@ class _EntryCard extends StatelessWidget {
                                 children: entry.tags.take(3).map((tag) {
                                   return Text(
                                     '#$tag',
-                                    style: GoogleFonts.poppins(
+                                    style: AppTextStyles.poppins(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
                                       color: const Color(0xFF3B9EFE),
@@ -667,7 +667,7 @@ class _EntryCard extends StatelessWidget {
                               alignment: Alignment.bottomRight,
                               child: Text(
                                 DateFormat('h:mm a').format(entry.date),
-                                style: GoogleFonts.poppins(
+                                style: AppTextStyles.poppins(
                                   fontSize: 10,
                                   color: const Color(0xFFBDC3C7),
                                   fontWeight: FontWeight.w500,
@@ -693,28 +693,41 @@ class _EntryCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              child: entry.mood.isEmpty
-                                  ? const SizedBox.shrink()
-                                  : entry.mood.endsWith('.svg')
-                                      ? SvgPicture.asset(
-                                          entry.mood,
-                                          width: 24,
-                                          height: 24,
-                                          fit: BoxFit.contain,
-                                        )
-                                      : entry.mood.endsWith('.png') ||
-                                              entry.mood.endsWith('.webp')
-                                          ? Image.asset(
-                                              entry.mood,
-                                              width: 24,
-                                              height: 24,
-                                              fit: BoxFit.contain,
-                                            )
-                                          : Text(
-                                              entry.mood,
-                                              style:
-                                                  const TextStyle(fontSize: 18),
-                                            ),
+                              child: () {
+                                if (entry.mood.isEmpty) return const SizedBox.shrink();
+                                
+                                String sanitizedMood = entry.mood;
+                                // Fix old/corrupt paths from database
+                                sanitizedMood = sanitizedMood.replaceAll('.webp', '.png');
+                                sanitizedMood = sanitizedMood.replaceAll('Animals_Mood_', 'Animals_Mood');
+                                sanitizedMood = sanitizedMood.replaceAll('Aqua_Mood_', 'Aqua_Mood');
+                                sanitizedMood = sanitizedMood.replaceAll('Pet_Mood_', 'Pet_Mood');
+
+                                if (sanitizedMood.endsWith('.svg')) {
+                                  return SvgPicture.asset(
+                                    sanitizedMood,
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.contain,
+                                  );
+                                } else if (sanitizedMood.endsWith('.png')) {
+                                  return Image.asset(
+                                    sanitizedMood,
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      // Fallback if image still fails
+                                      return const Icon(Icons.mood, size: 20, color: Colors.grey);
+                                    },
+                                  );
+                                } else {
+                                  return Text(
+                                    sanitizedMood,
+                                    style: const TextStyle(fontSize: 18),
+                                  );
+                                }
+                              }(),
                             ),
                           ),
                       ],

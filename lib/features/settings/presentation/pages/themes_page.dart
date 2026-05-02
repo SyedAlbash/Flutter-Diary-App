@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
 
 class ThemesPage extends StatefulWidget {
@@ -49,7 +49,7 @@ class _ThemesPageState extends State<ThemesPage> {
             ),
             title: Text(
               'Theme Preview',
-              style: GoogleFonts.poppins(
+              style: AppTextStyles.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: const Color(0xFF1A1A1A),
@@ -62,8 +62,8 @@ class _ThemesPageState extends State<ThemesPage> {
             height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
                 colors: [
                   Color(0xFFE0F2FD),
                   Color(0xFFF9E8F5),
@@ -123,8 +123,8 @@ class _ThemesPageState extends State<ThemesPage> {
                                     Container(
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                           colors: theme.gradientColors,
                                         ),
                                       ),
@@ -167,7 +167,8 @@ class _ThemesPageState extends State<ThemesPage> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF2196F3).withValues(alpha: 0.3),
+                              color: const Color(0xFF2196F3)
+                                  .withValues(alpha: 0.3),
                               blurRadius: 12,
                               offset: const Offset(0, 6),
                             ),
@@ -176,7 +177,7 @@ class _ThemesPageState extends State<ThemesPage> {
                         child: Center(
                           child: Text(
                             'APPLY',
-                            style: GoogleFonts.poppins(
+                            style: AppTextStyles.poppins(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -220,7 +221,7 @@ class _ThemesPageState extends State<ThemesPage> {
                 const SizedBox(width: 8),
                 Text(
                   'Search notes..',
-                  style: GoogleFonts.poppins(
+                  style: AppTextStyles.poppins(
                     fontSize: 12,
                     color: textColor.withValues(alpha: 0.6),
                   ),
@@ -249,7 +250,7 @@ class _ThemesPageState extends State<ThemesPage> {
                   children: [
                     Text(
                       '0${3 - index} Feb',
-                      style: GoogleFonts.poppins(
+                      style: AppTextStyles.poppins(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: textColor,
@@ -313,7 +314,7 @@ class _ThemesPageState extends State<ThemesPage> {
         const SizedBox(height: 2),
         Text(
           label,
-          style: GoogleFonts.poppins(
+          style: AppTextStyles.poppins(
             fontSize: 9,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             color: isSelected ? const Color(0xFF1A1A1A) : Colors.grey,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:diary_with_lock/core/theme/app_theme.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/features/home/presentation/controllers/home_controller.dart';
 import 'package:diary_with_lock/core/widgets/themed_background.dart';
 
@@ -122,7 +122,7 @@ class _DeleteWarningDialog extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Warning !!',
-              style: GoogleFonts.poppins(
+              style: AppTextStyles.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF1A1C1E),
@@ -132,7 +132,7 @@ class _DeleteWarningDialog extends StatelessWidget {
             Text(
               'Are you sure you want to delete All\nNotes?',
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: AppTextStyles.poppins(
                 fontSize: 14,
                 color: const Color(0xFF7F8C8D),
               ),
@@ -167,7 +167,7 @@ class _DeleteWarningDialog extends StatelessWidget {
                 ),
                 child: Text(
                   'Yes, Sure',
-                  style: GoogleFonts.poppins(
+                  style: AppTextStyles.poppins(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -180,7 +180,7 @@ class _DeleteWarningDialog extends StatelessWidget {
               onPressed: () => Get.back(),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.poppins(
+                style: AppTextStyles.poppins(
                   color: const Color(0xFF7F8C8D),
                   fontWeight: FontWeight.w500,
                 ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/theme/theme_controller.dart';
 import 'package:diary_with_lock/features/auth/pattern/presentation/controllers/pattern_controller.dart';
@@ -200,7 +200,7 @@ class _PatternScaffold extends StatelessWidget {
                                             child: Text(
                                               'Password',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.poppins(
+                                              style: AppTextStyles.poppins(
                                                 color: isDark
                                                     ? Colors.white
                                                     : const Color(0xFF2C3E50),
@@ -225,7 +225,7 @@ class _PatternScaffold extends StatelessWidget {
                                             child: Text(
                                               'Pattern',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.poppins(
+                                              style: AppTextStyles.poppins(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 14,
@@ -241,7 +241,7 @@ class _PatternScaffold extends StatelessWidget {
                             const SizedBox(height: 10),
                             Text(
                               title,
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
                                 color: textColor,
@@ -252,7 +252,7 @@ class _PatternScaffold extends StatelessWidget {
                               Text(
                                 subtitle,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(
+                                style: AppTextStyles.poppins(
                                   fontSize: 14,
                                   color: subTextColor,
                                 ),
@@ -300,7 +300,7 @@ class _PatternScaffold extends StatelessWidget {
                                 ),
                                 child: Text(
                                   'Forgot Passcode?',
-                                  style: GoogleFonts.poppins(
+                                  style: AppTextStyles.poppins(
                                     color: const Color(0xFF3B9EFE),
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
@@ -339,7 +339,7 @@ class _PatternScaffold extends StatelessWidget {
                                 ),
                                 child: Text(
                                   showStepIndicator ? 'Continue' : 'Unlock',
-                                  style: GoogleFonts.poppins(
+                                  style: AppTextStyles.poppins(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
                                   ),

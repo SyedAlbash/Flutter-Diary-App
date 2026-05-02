@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:diary_with_lock/core/constants/app_constants.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 
@@ -351,9 +350,11 @@ class ThemeController extends GetxController {
               primary: t.primary,
               secondary: t.accent,
             ),
-      textTheme: GoogleFonts.poppinsTextTheme(
-        isDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme,
-      ),
+      textTheme: ThemeData(
+        brightness: isDark ? Brightness.dark : Brightness.light,
+      ).textTheme.apply(
+            fontFamily: 'Poppins',
+          ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: t.primary,

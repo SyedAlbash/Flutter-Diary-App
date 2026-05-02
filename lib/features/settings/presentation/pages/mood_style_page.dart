@@ -1,103 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:diary_with_lock/core/utils/storage_util.dart';
 import 'package:diary_with_lock/core/widgets/themed_background.dart';
 
 class MoodStylePage extends StatefulWidget {
-  const MoodStylePage({super.key});
+  final bool isSelectionMode;
+  const MoodStylePage({super.key, this.isSelectionMode = false});
 
   @override
   State<MoodStylePage> createState() => _MoodStylePageState();
 }
 
 class _MoodStylePageState extends State<MoodStylePage> {
-  String _selectedMood = 'Mood - Cat';
+  String _selectedMood = 'Normal Mood Pack';
+  bool _isSelectionMode = false;
 
   final List<Map<String, dynamic>> _moodPacks = [
     {
       'name': 'Normal Mood Pack',
       'emojis': ['😊', '😔', '😡', '😴', '🤔', '🥳'],
-      'isIcon': false,
     },
     {
       'name': 'Animals Mood',
+      'isPng': true,
       'emojis': [
-        'assets/emojis/Animals_Mood/1.webp',
-        'assets/emojis/Animals_Mood/2.webp',
-        'assets/emojis/Animals_Mood/3.webp',
-        'assets/emojis/Animals_Mood/4.webp',
-        'assets/emojis/Animals_Mood/5.webp',
-        'assets/emojis/Animals_Mood/6.webp'
+        'assets/emojis/Animals_Mood/1.png',
+        'assets/emojis/Animals_Mood/3.png',
+        'assets/emojis/Animals_Mood/4.png',
+        'assets/emojis/Animals_Mood/5.png',
+        'assets/emojis/Animals_Mood/6.png',
+        'assets/emojis/Animals_Mood/6.png',
       ],
-      'isIcon': false,
-      'isImage': true,
     },
     {
       'name': 'Aqua Mood',
+      'isPng': true,
       'emojis': [
-        'assets/emojis/Aqua_Mood/1.webp',
-        'assets/emojis/Aqua_Mood/2.webp',
-        'assets/emojis/Aqua_Mood/3.webp',
-        'assets/emojis/Aqua_Mood/4.webp',
-        'assets/emojis/Aqua_Mood/5.webp',
-        'assets/emojis/Aqua_Mood/6.webp'
+        'assets/emojis/Aqua_Mood/1.png',
+        'assets/emojis/Aqua_Mood/2.png',
+        'assets/emojis/Aqua_Mood/3.png',
+        'assets/emojis/Aqua_Mood/4.png',
+        'assets/emojis/Aqua_Mood/5.png',
+        'assets/emojis/Aqua_Mood/6.png',
       ],
-      'isIcon': false,
-      'isImage': true,
     },
     {
       'name': 'Cat Mood',
+      'isSvg': true,
       'emojis': [
         'assets/emojis/Cat_Mood/Icon.svg',
-        'assets/emojis/Cat_Mood/Icon_1.svg',
-        'assets/emojis/Cat_Mood/Icon_2.svg',
-        'assets/emojis/Cat_Mood/Icon_3.svg',
-        'assets/emojis/Cat_Mood/Icon_4.svg',
-        'assets/emojis/Cat_Mood/Icon_5.svg'
+        'assets/emojis/Cat_Mood/Icon (1).svg',
+        'assets/emojis/Cat_Mood/Icon (2).svg',
+        'assets/emojis/Cat_Mood/Icon (3).svg',
+        'assets/emojis/Cat_Mood/Icon (4).svg',
+        'assets/emojis/Cat_Mood/Icon (5).svg',
       ],
-      'isIcon': false,
-      'isSvg': true,
     },
     {
       'name': 'Pet Mood',
+      'isPng': true,
       'emojis': [
-        'assets/emojis/Pet_Mood/1.webp',
-        'assets/emojis/Pet_Mood/2.webp',
-        'assets/emojis/Pet_Mood/3.webp',
-        'assets/emojis/Pet_Mood/5.webp',
-        'assets/emojis/Pet_Mood/6.webp',
-        'assets/emojis/Pet_Mood/6_1.webp'
+        'assets/emojis/Pet_Mood/1.png',
+        'assets/emojis/Pet_Mood/2.png',
+        'assets/emojis/Pet_Mood/3.png',
+        'assets/emojis/Pet_Mood/5.png',
+        'assets/emojis/Pet_Mood/6.png',
+        'assets/emojis/Pet_Mood/6.png',
       ],
-      'isIcon': false,
-      'isImage': true,
     },
   ];
 
   @override
   void initState() {
     super.initState();
+    _isSelectionMode = widget.isSelectionMode || (Get.arguments?['isSelectionMode'] ?? false);
     _selectedMood = StorageUtil.getString('mood_style') ?? 'Normal Mood Pack';
-  }
-
-  Alignment _getAlignmentForIndex(int index) {
-    switch (index) {
-      case 0:
-        return Alignment.topLeft;
-      case 1:
-        return Alignment.topCenter;
-      case 2:
-        return Alignment.topRight;
-      case 3:
-        return Alignment.centerLeft;
-      case 4:
-        return Alignment.center;
-      case 5:
-        return Alignment.centerRight;
-      default:
-        return Alignment.center;
-    }
   }
 
   @override
@@ -107,8 +86,8 @@ class _MoodStylePageState extends State<MoodStylePage> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
-          'Mood style',
-          style: GoogleFonts.poppins(
+          _isSelectionMode ? 'Select Mood' : 'Mood style',
+          style: AppTextStyles.poppins(
             color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -130,9 +109,11 @@ class _MoodStylePageState extends State<MoodStylePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Text(
-                  'Choose an emoji pack that reflects your daily',
+                  _isSelectionMode 
+                    ? 'Pick an emoji that fits your mood today'
+                    : 'Choose an emoji pack that reflects your daily',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: AppTextStyles.poppins(
                     fontSize: 14,
                     color: const Color(0xFF7F8C8D),
                     height: 1.5,
@@ -149,8 +130,9 @@ class _MoodStylePageState extends State<MoodStylePage> {
                     final isSelected = _selectedMood == pack['name'];
                     return GestureDetector(
                       onTap: () async {
-                        setState(() => _selectedMood = pack['name']);
-                        await StorageUtil.setString('mood_style', pack['name']);
+                        setState(() => _selectedMood = pack['name'] as String);
+                        await StorageUtil.setString(
+                            'mood_style', pack['name'] as String);
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 24),
@@ -172,8 +154,8 @@ class _MoodStylePageState extends State<MoodStylePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  pack['name'],
-                                  style: GoogleFonts.poppins(
+                                  pack['name'] as String,
+                                  style: AppTextStyles.poppins(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 17,
                                     color: const Color(0xFF1A1A1A),
@@ -205,7 +187,6 @@ class _MoodStylePageState extends State<MoodStylePage> {
                               ],
                             ),
                             const SizedBox(height: 20),
-                            // 3x2 Grid
                             GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -218,84 +199,58 @@ class _MoodStylePageState extends State<MoodStylePage> {
                               ),
                               itemCount: 6,
                               itemBuilder: (ctx, index) {
-                                final emojis = (pack['emojis'] as List?);
-                                final icons = (pack['icons'] as List?);
-                                final isIcon = pack['isIcon'] as bool? ?? false;
-                                final isSvg = pack['isSvg'] as bool? ?? false;
-                                final isImage =
-                                    pack['isImage'] as bool? ?? false;
-                                final isAqua = pack['isAqua'] == true;
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: isAqua
-                                        ? const Color(0xFFE3F2FD)
-                                        : const Color(0xFFF5F6F7),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Center(
-                                    child: isIcon
-                                        ? (icons != null && index < icons.length
-                                            ? Icon(
-                                                icons[index],
-                                                color: const Color(0xFF3B9EFE),
-                                                size: 36,
-                                              )
-                                            : const SizedBox.shrink())
-                                        : isSvg
-                                            ? (emojis != null &&
-                                                    index < emojis.length
-                                                ? SvgPicture.asset(
-                                                    emojis[index],
-                                                    fit: BoxFit.contain,
-                                                    clipBehavior: Clip.none,
-                                                    placeholderBuilder:
-                                                        (context) =>
-                                                            const Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                        color:
-                                                            Color(0xFF3B9EFE),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : const SizedBox.shrink())
-                                            : isImage
-                                                ? (emojis != null &&
-                                                        index < emojis.length
-                                                    ? Container(
-                                                        width: 50,
-                                                        height: 50,
-                                                        child: ClipRect(
-                                                          child: OverflowBox(
-                                                            maxWidth: 150,
-                                                            maxHeight: 150,
-                                                            alignment:
-                                                                _getAlignmentForIndex(
-                                                                    index),
-                                                            child: Image.asset(
-                                                              emojis[index],
-                                                              width: 150,
-                                                              height: 150,
-                                                              fit: BoxFit.fill,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : const SizedBox.shrink())
-                                                : (emojis != null &&
-                                                        index < emojis.length
-                                                    ? Text(
-                                                        emojis[index],
-                                                        style: TextStyle(
-                                                          fontSize: 32,
-                                                          color: isAqua
-                                                              ? const Color(
-                                                                  0xFF3B9EFE)
-                                                              : null,
-                                                        ),
-                                                      )
-                                                    : const SizedBox.shrink()),
+                                final emojis = pack['emojis'] as List<dynamic>?;
+                                final isSvg = pack['isSvg'] == true;
+                                final isPng = pack['isPng'] == true;
+
+                                Widget emojiWidget = const SizedBox.shrink();
+                                if (emojis != null && index < emojis.length) {
+                                  final path = emojis[index] as String;
+                                  if (isSvg) {
+                                    emojiWidget = SvgPicture.asset(
+                                      path,
+                                      width: 44,
+                                      height: 44,
+                                      fit: BoxFit.contain,
+                                    );
+                                  } else if (isPng) {
+                                    emojiWidget = Image.asset(
+                                      path,
+                                      width: 44,
+                                      height: 44,
+                                      fit: BoxFit.contain,
+                                    );
+                                  } else {
+                                    emojiWidget = Text(
+                                      path,
+                                      style: const TextStyle(fontSize: 32),
+                                    );
+                                  }
+                                }
+
+                                return GestureDetector(
+                                  onTap: () async {
+                                    if (_isSelectionMode) {
+                                      final emojis = pack['emojis'] as List<dynamic>?;
+                                      if (emojis != null && index < emojis.length) {
+                                        final path = emojis[index] as String;
+                                        // Save the pack selection first
+                                        await StorageUtil.setString('mood_style', pack['name'] as String);
+                                        // Return the specific emoji
+                                        Get.back(result: path);
+                                      }
+                                    } else {
+                                      // If not in selection mode, tapping an emoji just selects the pack
+                                      setState(() => _selectedMood = pack['name'] as String);
+                                      await StorageUtil.setString('mood_style', pack['name'] as String);
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF5F6F7),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Center(child: emojiWidget),
                                   ),
                                 );
                               },

@@ -29,8 +29,10 @@ class _DrawingPageState extends State<DrawingPage> {
             end: Alignment.bottomCenter,
             colors: [
               Color(0xFFE0F2FD),
+              Color(0xFFE8F0F8),
               Color(0xFFF9E8F5),
             ],
+            stops: [0.0, 0.58, 1.0],
           ),
         ),
         child: SafeArea(

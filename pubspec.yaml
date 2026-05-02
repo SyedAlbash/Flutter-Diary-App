@@ -11,7 +11,6 @@ dependencies:
     sdk: flutter
   get: ^4.6.6
   shared_preferences: ^2.2.2
-  google_fonts: ^6.1.0
   table_calendar: ^3.0.9
   image_picker: ^1.0.7
   intl: ^0.19.0
@@ -32,6 +31,27 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 300
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/Pacifico-Regular.ttf
+    - family: Yellowtail
+      fonts:
+        - asset: assets/fonts/Yellowtail-Regular.ttf
+    - family: LilyScriptOne
+      fonts:
+        - asset: assets/fonts/LilyScriptOne-Regular.ttf
   assets:
     - assets/note_themes/
     - assets/screens/Delete Date Card.webp
@@ -39,3 +59,7 @@ flutter:
     - assets/screens/Main Feature Card.webp
     - assets/screens/Margin.webp
     - assets/themes/
+    - assets/emojis/Animals_Mood/
+    - assets/emojis/Aqua_Mood/
+    - assets/emojis/Cat_Mood/
+    - assets/emojis/Pet_Mood/

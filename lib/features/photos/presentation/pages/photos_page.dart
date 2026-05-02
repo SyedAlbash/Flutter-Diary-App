@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/features/home/presentation/controllers/home_controller.dart';
 import 'package:diary_with_lock/features/compose/presentation/pages/compose_page.dart';
 
@@ -27,7 +27,7 @@ class PhotosPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 24, top: 16, bottom: 24),
                 child: Text(
                   'Gallery',
-                  style: GoogleFonts.yellowtail(
+                  style: AppTextStyles.yellowtail(
                     fontSize: 32,
                     fontWeight: FontWeight.w500,
                     color: const Color(0xFF1A1A1A),
@@ -128,7 +128,7 @@ class _EmptyGallery extends StatelessWidget {
           const SizedBox(height: 24),
           Text(
             'No photos yet',
-            style: GoogleFonts.poppins(
+            style: AppTextStyles.poppins(
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF1A1A1A),
@@ -138,7 +138,7 @@ class _EmptyGallery extends StatelessWidget {
           Text(
             'All photos in your diary will be\nshown here.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: AppTextStyles.poppins(
               fontSize: 14,
               color: const Color(0xFF7F8C8D),
             ),

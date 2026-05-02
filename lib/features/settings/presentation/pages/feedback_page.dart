@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:diary_with_lock/core/theme/app_text_styles.dart';
 import 'package:diary_with_lock/core/utils/email_util.dart';
 import 'package:diary_with_lock/core/widgets/themed_background.dart';
 
@@ -61,7 +61,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 Text(
                   'Tell Us About Your\nExperience',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: AppTextStyles.poppins(
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
                     color: const Color(0xFF1A1A1A),
@@ -72,7 +72,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 Text(
                   'Your thoughts help us shape a more\nmindful journey for everyone.',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: AppTextStyles.poppins(
                     fontSize: 14,
                     color: const Color(0xFF7F8C8D),
                     height: 1.5,
@@ -162,7 +162,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                             child: Text(
                               type.replaceAll(' Feedback', ''),
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.poppins(
                                 fontSize: 13,
                                 color: isSelected
                                     ? Colors.white
@@ -201,14 +201,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           maxLines: null,
                           expands: true,
                           maxLength: 500,
-                          style: GoogleFonts.poppins(
+                          style: AppTextStyles.poppins(
                             fontSize: 14,
                             color: const Color(0xFF2C3E50),
                           ),
                           decoration: InputDecoration(
                             hintText:
                                 'Tell us more about what you liked or what we can improve...',
-                            hintStyle: GoogleFonts.poppins(
+                            hintStyle: AppTextStyles.poppins(
                               color: const Color(0xFFBDC3C7),
                               fontSize: 14,
                             ),
@@ -226,7 +226,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           alignment: Alignment.centerRight,
                           child: Text(
                             'MAX 500 CHARACTERS',
-                            style: GoogleFonts.poppins(
+                            style: AppTextStyles.poppins(
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                               color: const Color(0xFFBDC3C7),
@@ -304,7 +304,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       children: [
                         Text(
                           'Submit Feedback',
-                          style: GoogleFonts.poppins(
+                          style: AppTextStyles.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
